@@ -31,7 +31,7 @@ CREATE TABLE `Apart` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- 신고내역 테이블
-CREATE TABLE `report` (
+CREATE TABLE `Report` (
   `idx` int(11) NOT NULL AUTO_INCREMENT,
   `userId` varchar(100) NOT NULL, -- 신고자 ID
   `reportDate` timestamp NOT NULL DEFAULT current_timestamp(), -- 신고 시각
@@ -44,7 +44,7 @@ CREATE TABLE `report` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- 소음예고내역 테이블
-CREATE TABLE `report_schedule` (
+CREATE TABLE `ReportSchedule` (
   `idx` int(11) NOT NULL AUTO_INCREMENT,
   `userId` varchar(100) NOT NULL, -- 신고자 ID
   `reportDate` timestamp NOT NULL DEFAULT current_timestamp(), -- 신고 시각
