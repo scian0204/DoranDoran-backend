@@ -44,11 +44,12 @@ CREATE TABLE `Report` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- 소음예고내역 테이블
-CREATE TABLE `ReportSchedule` (
+CREATE TABLE `NoiseSchedule` (
   `idx` int(11) NOT NULL AUTO_INCREMENT,
   `userId` varchar(100) NOT NULL, -- 신고자 ID
   `reportDate` timestamp NOT NULL DEFAULT current_timestamp(), -- 신고 시각
-  `scheduleDate` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00', -- 소음 발생 예정 시각
+  `startDate` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00', -- 소음 발생 시작 예정 시각
+  `endDate` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00', -- 소음 발생 종료 예정 시각
   `reason` text DEFAULT NULL, -- 소음 발생 이유
   PRIMARY KEY (`idx`),
   KEY `report_schedule_FK` (`userId`),
