@@ -7,15 +7,53 @@
 - Dependencies: spring boot devtools, lombok, spring web
 - MariaDB : 
 ```
-// 게시글 테이블
-CREATE TABLE `Board` (
-
-)
+// 아파트 테이블
+CREATE TABLE `Apart` (
+  `idx` int(11) NOT NULL AUTO_INCREMENT,
+  `apartName` varchar(100) NOT NULL,
+  `dong` varchar(100) NOT NULL,
+  `ho` varchar(100) NOT NULL,
+  `userId` varchar(100) NOT NULL,
+  PRIMARY KEY (`idx`),
+  KEY `Apart_FK` (`userId`),
+  CONSTRAINT `Apart_FK` FOREIGN KEY (`userId`) REFERENCES `User` (`userId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 // 유저 테이블
 CREATE TABLE `User` (
+  `userId` varchar(100) NOT NULL,
+  `userName` varchar(100) NOT NULL,
+  `passsword` varchar(100) NOT NULL,
+  `telNum` varchar(100) DEFAULT NULL,
+  `isAdmin` varchar(100) DEFAULT NULL,
+  `regDate` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`userId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-)
+// 신고내역 테이블
+CREATE TABLE `report` (
+  `idx` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` varchar(100) NOT NULL,
+  `reportDate` timestamp NOT NULL DEFAULT current_timestamp(),
+  `occurDate` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `detail` text DEFAULT NULL,
+  `isCheck` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`idx`),
+  KEY `report_FK` (`userId`),
+  CONSTRAINT `report_FK` FOREIGN KEY (`userId`) REFERENCES `User` (`userId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+// 소음예고내역 테이블
+CREATE TABLE `report_schedule` (
+  `idx` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` varchar(100) NOT NULL,
+  `reportDate` timestamp NOT NULL DEFAULT current_timestamp(),
+  `scheduleDate` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `reason` text DEFAULT NULL,
+  PRIMARY KEY (`idx`),
+  KEY `report_schedule_FK` (`userId`),
+  CONSTRAINT `report_schedule_FK` FOREIGN KEY (`userId`) REFERENCES `User` (`userId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ```
 
 ## TODO
