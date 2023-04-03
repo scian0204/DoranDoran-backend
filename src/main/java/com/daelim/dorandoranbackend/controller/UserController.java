@@ -1,6 +1,6 @@
-package com.daelim.blogbackend.controller;
+package com.daelim.dorandoranbackend.controller;
 
-import com.daelim.blogbackend.service.UserService;
+import com.daelim.dorandoranbackend.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

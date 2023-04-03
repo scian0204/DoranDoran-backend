@@ -1,6 +1,6 @@
-package com.daelim.blogbackend.repository;
+package com.daelim.dorandoranbackend.repository;
 
-import com.daelim.blogbackend.entity.User;
+import com.daelim.dorandoranbackend.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

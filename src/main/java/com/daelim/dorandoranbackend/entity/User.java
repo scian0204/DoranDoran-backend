@@ -1,4 +1,4 @@
-package com.daelim.blogbackend.entity;
+package com.daelim.dorandoranbackend.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -18,5 +18,7 @@ public class User {
     private String userId;
     private String userName;
     private String password;
+    private String telNum;
+    private String isAdmin;
     private Timestamp regDate;
 }

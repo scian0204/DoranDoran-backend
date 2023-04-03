@@ -1,7 +1,7 @@
-package com.daelim.blogbackend.service;
+package com.daelim.dorandoranbackend.service;
 
-import com.daelim.blogbackend.entity.User;
-import com.daelim.blogbackend.repository.UserRepository;
+import com.daelim.dorandoranbackend.entity.User;
+import com.daelim.dorandoranbackend.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
