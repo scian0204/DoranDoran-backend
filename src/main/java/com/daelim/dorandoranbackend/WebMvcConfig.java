@@ -1,4 +1,4 @@
-package com.daelim.blogbackend;
+package com.daelim.dorandoranbackend;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
