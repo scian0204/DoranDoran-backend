@@ -1,6 +1,5 @@
-package com.daelim.blogbackend.entity;
+package com.daelim.dorandoranbackend.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,13 +15,13 @@ import java.sql.Timestamp;
 @DynamicUpdate
 //@ToString
 @Entity
-public class Board {
+public class Report {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idx;
     private String userId;
-    private String title;
-    private String content;
-    private Timestamp writeDate;
-    private String imageLoc;
+    private Timestamp reportDate;
+    private Timestamp occurDate;
+    private String detail;
+    private String isCheck;
 }

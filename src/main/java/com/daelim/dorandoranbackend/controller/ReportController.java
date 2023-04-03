@@ -1,7 +1,7 @@
-package com.daelim.blogbackend.controller;
+package com.daelim.dorandoranbackend.controller;
 
-import com.daelim.blogbackend.entity.Board;
-import com.daelim.blogbackend.service.BoardService;
+import com.daelim.dorandoranbackend.entity.Report;
+import com.daelim.dorandoranbackend.service.ReportService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,18 +11,17 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/boards")
-public class BoardController {
+@RequestMapping("/api/Report")
+public class ReportController {
     @Autowired
-    BoardService boardService;
+    ReportService reportService;
 
     @PostMapping("/write")
     public void insertBoard(@RequestBody Map<String,Object> boardObj, MultipartFile file) throws Exception {
-        boardService.write(boardObj, file); //하단 insertBoard2랑 비교 확인
+        reportService.write(boardObj, file); //하단 insertBoard2랑 비교 확인
     }
 
 //    @PostMapping("/write") //return 값이 String
@@ -31,26 +30,26 @@ public class BoardController {
 //    }
 
     @GetMapping("/list")
-    public Page<Board> getAllBoardsDESC(@PageableDefault(page = 0, size = 10, sort = "idx", direction = Sort.Direction.DESC) Pageable pageable) {
-        return boardService.getAllBoards(pageable);
+    public Page<Report> getAllBoardsDESC(@PageableDefault(page = 0, size = 10, sort = "idx", direction = Sort.Direction.DESC) Pageable pageable) {
+        return reportService.getAllBoards(pageable);
     }
     @GetMapping("/list/ASC")
-    public Page<Board> getAllBoardsASC(@PageableDefault(page = 0, size = 10, sort = "idx", direction = Sort.Direction.ASC) Pageable pageable) {
-        return boardService.getAllBoards(pageable);
+    public Page<Report> getAllBoardsASC(@PageableDefault(page = 0, size = 10, sort = "idx", direction = Sort.Direction.ASC) Pageable pageable) {
+        return reportService.getAllBoards(pageable);
     }
 
     @PutMapping("/update")
     public void updateBoard(@RequestBody Map<String,Object> boardObj, HttpSession session) throws Exception {
-        boardService.updateBoard(boardObj, session);
+        reportService.updateBoard(boardObj, session);
     }
 
     @GetMapping("/{idx}") // <- idx가 자동으로 들어감(@PathVariable)
-    public Board viewBoard(@PathVariable int idx) {
-        return boardService.viewBoard(idx);
+    public Report viewBoard(@PathVariable int idx) {
+        return reportService.viewBoard(idx);
     }
 
     @PostMapping("/delete") //POST 형식
     public String deleteBoardPost(@RequestBody Map<String,Object> boardObj, HttpSession session) throws Exception {
-        return boardService.deleteBoardPost(boardObj, session);
+        return reportService.deleteBoardPost(boardObj, session);
     }
 }
