@@ -1,13 +1,13 @@
-package com.daelim.blogbackend;
+package com.daelim.dorandoranbackend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class BlogBackendApplication {
+public class DoranDoranBackendApplication {
     //test
     public static void main(String[] args) {
-        SpringApplication.run(BlogBackendApplication.class, args);
+        SpringApplication.run(DoranDoranBackendApplication.class, args);
     }
 
 }

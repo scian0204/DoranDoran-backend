@@ -1,10 +1,10 @@
-package com.daelim.blogbackend;
+package com.daelim.dorandoranbackend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class BlogBackendApplicationTests {
+class DoranDoranBackendApplicationTests {
 
     @Test
     void contextLoads() {
