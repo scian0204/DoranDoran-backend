@@ -11,13 +11,11 @@ import org.hibernate.annotations.DynamicUpdate;
 @Data
 @DynamicInsert
 @DynamicUpdate
-//@ToString
 @Entity
-public class Apart {
+public class ApartInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer apartIdx;
     private Integer apartId;
-    private String dong;
-    private String ho;
+    private String apartName;
+    private String location;
 }

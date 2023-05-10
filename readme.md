@@ -18,17 +18,37 @@ CREATE TABLE `User` (
   PRIMARY KEY (`userId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- 아파트 정보 테이블
+CREATE TABLE `ApartInfo` (
+  `apartId` int(11) NOT NULL AUTO_INCREMENT, -- 아파트 ID
+  `apartName` varchar(100) NOT NULL, -- 아파트 이름
+  `location` varchar(100) NOT NULL, -- 아파트 위치
+  PRIMARY KEY (`apartId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 -- 아파트 테이블
 CREATE TABLE `Apart` (
-  `idx` int(11) NOT NULL AUTO_INCREMENT,
-  `apartName` varchar(100) NOT NULL, -- 아파트 이름
+  `apartIdx` int(11) NOT NULL AUTO_INCREMENT, -- 아파트 idx
+  `apartId` int(11) NOT NULL, -- 아파트 ID
   `dong` varchar(100) NOT NULL, -- 동
   `ho` varchar(100) NOT NULL, -- 호
-  `userId` varchar(100) NOT NULL, -- 세대원 유저 ID
-  PRIMARY KEY (`idx`),
-  KEY `Apart_FK` (`userId`),
-  CONSTRAINT `Apart_FK` FOREIGN KEY (`userId`) REFERENCES `User` (`userId`)
+  PRIMARY KEY (`apartIdx`),
+  KEY `Apart_FK_1` (`apartId`),
+  CONSTRAINT `Apart_FK_1` FOREIGN KEY (`apartId`) REFERENCES `ApartInfo` (`apartId`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- 아파트 유저 테이블
+CREATE TABLE `ApartUser` (
+  `idx` int(11) NOT NULL AUTO_INCREMENT,
+  `apartIdx` int(11) NOT NULL, -- 아파트 idx
+  `userId` varchar(100) NOT NULL, -- 유저 ID
+  PRIMARY KEY (`idx`),
+  KEY `ApartUser_FK` (`apartIdx`),
+  KEY `ApartUser_FK_1` (`userId`),
+  CONSTRAINT `ApartUser_FK` FOREIGN KEY (`apartIdx`) REFERENCES `Apart` (`apartIdx`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `ApartUser_FK_1` FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 -- 신고내역 테이블
 CREATE TABLE `Report` (
