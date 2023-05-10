@@ -84,38 +84,5 @@ CREATE TABLE `NoiseSchedule` (
 gitLab 연동 테스트
 
 ## API 표
-/api/users
-<table>
-<tr>
-<th>URL</th>
-<th>Method</th>
-<th>설명</th>
-<th>request</th>
-<th>response</th>
-</tr>
-<tr>
-<td> </td>
-<td> </td>
-<td> </td>
-<td> </td>
-<td> </td>
-</tr>
-</table>
-<hr>
-/api/boards
-<table>
-<tr>
-<th>URL</th>
-<th>Method</th>
-<th>설명</th>
-<th>request</th>
-<th>response</th>
-</tr>
-<tr>
-<td> </td>
-<td> </td>
-<td> </td>
-<td> </td>
-<td> </td>
-</tr>
-</table>
+### Swagger로 대체
+- 서버실행 후 http://localhost:8080/swagger-ui/index.html#/ 접속
