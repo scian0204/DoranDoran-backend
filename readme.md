@@ -1,5 +1,5 @@
 # 한이음 프로젝트 - 도란도란
-## 백엔드(Spring-boot) test
+## 백엔드(Spring-boot)
 
 프로젝트 생성 - https://start.spring.io/
 - spring-version: 3.0.2
