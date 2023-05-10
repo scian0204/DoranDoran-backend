@@ -2,6 +2,7 @@ package com.daelim.dorandoranbackend.controller;
 
 import com.daelim.dorandoranbackend.entity.Report;
 import com.daelim.dorandoranbackend.service.ReportService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 
+@Tag(name = "Report", description = "소음신고 API")
 @RestController
 @RequestMapping("/api/Report")
 public class ReportController {

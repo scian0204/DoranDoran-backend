@@ -2,11 +2,13 @@ package com.daelim.dorandoranbackend.controller;
 
 import com.daelim.dorandoranbackend.entity.Apart;
 import com.daelim.dorandoranbackend.service.ApartService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Apart", description = "아파트 API")
 @RestController
 @RequestMapping("/api/apart")
 public class ApartController {
