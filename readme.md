@@ -105,4 +105,5 @@ gitLab 연동 테스트
 
 ## API 표
 ### Swagger로 대체
+- http://hanium-api.kro.kr:8088/docs/ 접속
 - 서버실행 후 http://localhost:8080/swagger-ui/index.html#/ 접속
