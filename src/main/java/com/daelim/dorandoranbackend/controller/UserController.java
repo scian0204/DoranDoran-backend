@@ -2,6 +2,9 @@ package com.daelim.dorandoranbackend.controller;
 
 import com.daelim.dorandoranbackend.controller.requestObject.LoginRequest;
 import com.daelim.dorandoranbackend.controller.requestObject.UserRequest;
+import com.daelim.dorandoranbackend.controller.responseObject.Error;
+import com.daelim.dorandoranbackend.controller.responseObject.Response;
+import com.daelim.dorandoranbackend.entity.User;
 import com.daelim.dorandoranbackend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.Map;
 
 @Tag(name = "User", description = "유저 API")
@@ -25,7 +29,7 @@ public class UserController {
 
     @Operation(summary = "회원가입")
     @PostMapping("/signup")
-    public String signUp(
+    public Response<User> signUp(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     content = @Content(
                             schema = @Schema(implementation = UserRequest.class)
@@ -37,7 +41,7 @@ public class UserController {
 
     @Operation(summary = "로그인")
     @PostMapping("/login")
-    public String login(
+    public Response<String> login(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     content = @Content(
                             schema = @Schema(implementation = LoginRequest.class)
@@ -49,33 +53,40 @@ public class UserController {
 
     @Operation(summary = "로그아웃")
     @GetMapping("/logout")
-    public void logout(HttpSession session) {
+    public Response<String> logout(HttpSession session) {
         session.removeAttribute("userId");
+        Response<String> res = new Response<>();
+        return res;
     }
 
     @Operation(summary = "로그인 여부 확인")
     @ApiResponse(description = "로그인 상태: 해당 아이디 세션<br>로그아웃 상태: null")
     @GetMapping("/isLogin")
-    public Object isLogin(HttpSession session) {
-        return session.getAttribute("userId");
+    public Response<String> isLogin(HttpSession session) {
+        Response<String> res = new Response<>();
+        Object userId = session.getAttribute("userId");
+        if (userId != null) {
+            res.setData(userId.toString());
+        }
+        return res;
     }
 
     @Operation(summary = "유저 정보 수정")
     @PutMapping("/modify")
-    public void updateUser(
+    public Response<User> updateUser(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     content = @Content(
                             schema = @Schema(implementation = UserRequest.class)
                     )
             )
             @RequestBody Map<String, Object> userObj, HttpSession session) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        userService.updateUser(userObj, session);
+        return userService.updateUser(userObj, session);
     }
 
     @Operation(summary = "회원 탈퇴")
     @ApiResponse(description = "탈퇴 성공: 2<br>탈퇴실패-로그인돼있는 id와 다름: 0<br>탈퇴실패-id는 맞지만 pw틀림: 1")
     @PostMapping("/delete")
-    public String deleteUser(
+    public Response<Object> deleteUser(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     content = @Content(
                             schema = @Schema(implementation = LoginRequest.class)
@@ -87,7 +98,7 @@ public class UserController {
 
     @Operation(summary = "아이디 중복 체크")
     @GetMapping("/isIdDup/{userId}")
-    public boolean isIdDup(@PathVariable String userId) {
+    public Response<Boolean> isIdDup(@PathVariable String userId) {
         return userService.isIdDup(userId);
     }
 }

@@ -19,6 +19,6 @@ public class User {
     private String userName;
     private String password;
     private String telNum;
-    private String isAdmin;
+    private Integer isAdmin;
     private Timestamp regDate;
 }
