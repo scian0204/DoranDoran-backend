@@ -29,15 +29,16 @@ public class UserService{
         if (userS.isEmpty()) {
             session.setAttribute("userId", user.getUserId());
             user.setPassword(encrypt(user.getPassword()));
-            res.setData(userRepository.save(user));
-            return res;
+            User resUser = userRepository.save(user);
+            resUser.setPassword("");
+            res.setData(resUser);
         } else {
             Error error = new Error();
             error.setErrorId(0);
             error.setMessage("userId 중복됨");
             res.setError(error);
-            return res;
         }
+        return res;
     }
 
     public Response<String> login(Map<String, Object> userObj, HttpSession session) throws UnsupportedEncodingException, NoSuchAlgorithmException {
@@ -76,7 +77,9 @@ public class UserService{
             User user1 = optUser.get();
             user.setRegDate(user1.getRegDate());
             user.setPassword(encrypt(user.getPassword()));
-            res.setData(userRepository.save(user));
+            User resUser = userRepository.save(user);
+            resUser.setPassword("");
+            res.setData(resUser);
         } else {
             Error error = new Error();
             error.setErrorId(0);
