@@ -72,7 +72,7 @@ public class ApartService {
 
             aar.getDongs().forEach(dong -> {
                 for (int i = 1; i <= aar.getNumOfFloor(); i++) {
-                    for (int j = 0; j < aar.getNumOfHo(); j++) {
+                    for (int j = 1; j <= aar.getNumOfHo(); j++) {
                         Apart apart = new Apart();
                         apart.setApartId(aar.getApartId());
                         apart.setDong(dong);
