@@ -8,23 +8,24 @@
 - MariaDB : 
 ```
 -- 유저 테이블
-CREATE TABLE `User` (
+CREATE TABLE `User` ( 
   `userId` varchar(100) NOT NULL, -- 유저 ID
   `userName` varchar(100) NOT NULL, -- 유저 이름
-  `passsword` varchar(100) NOT NULL, -- 암호
+  `password` varchar(100) NOT NULL, -- 암호
   `telNum` varchar(100) DEFAULT NULL, -- 전화번호
-  `isAdmin` varchar(100) DEFAULT NULL, -- 관리자 여부 | null -> 일반유저, 아파트 이름 -> 해당 아파트 관리자
-  `regDate` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`userId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `isAdmin` int(11) DEFAULT NULL, -- 관리자 여부 | null -> 일반유저, 아파트 이름 -> 해당 아파트 관리자
+  `regDate` timestamp NOT NULL DEFAULT current_timestamp(), 
+  PRIMARY KEY (`userId`), 
+  KEY `User_FK` (`isAdmin`), 
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8; 
 
 -- 아파트 정보 테이블
-CREATE TABLE `ApartInfo` (
+CREATE TABLE `ApartInfo` ( 
   `apartId` int(11) NOT NULL AUTO_INCREMENT, -- 아파트 ID
   `apartName` varchar(100) NOT NULL, -- 아파트 이름
   `location` varchar(100) NOT NULL, -- 아파트 위치
-  PRIMARY KEY (`apartId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`apartId`) 
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8; 
 
 -- 아파트 테이블
 CREATE TABLE `Apart` (
@@ -35,7 +36,7 @@ CREATE TABLE `Apart` (
   PRIMARY KEY (`apartIdx`),
   KEY `Apart_FK_1` (`apartId`),
   CONSTRAINT `Apart_FK_1` FOREIGN KEY (`apartId`) REFERENCES `ApartInfo` (`apartId`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=201 DEFAULT CHARSET=utf8;
 
 -- 아파트 유저 테이블
 CREATE TABLE `ApartUser` (
@@ -49,7 +50,6 @@ CREATE TABLE `ApartUser` (
   CONSTRAINT `ApartUser_FK_1` FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
 -- 신고내역 테이블
 CREATE TABLE `Report` (
   `idx` int(11) NOT NULL AUTO_INCREMENT,
@@ -60,7 +60,7 @@ CREATE TABLE `Report` (
   `isCheck` varchar(100) DEFAULT NULL, -- 확인 여부
   PRIMARY KEY (`idx`),
   KEY `report_FK` (`userId`),
-  CONSTRAINT `report_FK` FOREIGN KEY (`userId`) REFERENCES `User` (`userId`)
+  CONSTRAINT `report_FK` FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- 소음예고내역 테이블
@@ -73,7 +73,39 @@ CREATE TABLE `NoiseSchedule` (
   `reason` text DEFAULT NULL, -- 소음 발생 이유
   PRIMARY KEY (`idx`),
   KEY `report_schedule_FK` (`userId`),
-  CONSTRAINT `report_schedule_FK` FOREIGN KEY (`userId`) REFERENCES `User` (`userId`)
+  CONSTRAINT `report_schedule_FK` FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- 센서 정보 테이블
+CREATE TABLE `Sensor` (
+  `sensorId` varchar(100) NOT NULL,
+  `apartIdx` int(11) NOT NULL, -- 설치된 아파트의 동 호(apart의 apartIdx)
+  `location` varchar(100) NOT NULL, -- 상세 위치 ex)주방, 안방 등
+  PRIMARY KEY (`sensorId`),
+  KEY `Sensor_FK` (`apartIdx`),
+  CONSTRAINT `Sensor_FK` FOREIGN KEY (`apartIdx`) REFERENCES `Apart` (`apartIdx`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- 센서 감지 데이터 테이블
+CREATE TABLE `SensorReport` (
+  `idx` int(11) NOT NULL AUTO_INCREMENT,
+  `sensorId` varchar(100) NOT NULL,
+  `noiseLevel` double NOT NULL, -- 소음 정도 ex) dB
+  `reportDate` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`idx`),
+  KEY `SensorReport_FK` (`sensorId`),
+  CONSTRAINT `SensorReport_FK` FOREIGN KEY (`sensorId`) REFERENCES `Sensor` (`sensorId`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- 유저별 경고 메시지 테이블
+CREATE TABLE `WarningMessage` (
+  `idx` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` varchar(100) NOT NULL,
+  `message` varchar(100) NOT NULL,
+  `regDate` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`idx`),
+  KEY `WarningMessage_FK` (`userId`),
+  CONSTRAINT `WarningMessage_FK` FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ```
 
