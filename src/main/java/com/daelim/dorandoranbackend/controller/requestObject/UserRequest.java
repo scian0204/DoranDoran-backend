@@ -7,4 +7,5 @@ public class UserRequest {
     String userId;
     String userName;
     String password;
+    String telNum;
 }
