@@ -1,5 +1,6 @@
 package com.daelim.dorandoranbackend.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,6 +22,7 @@ public class Report {
     private Integer idx;
     private String userId;
     private Timestamp reportDate;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm", timezone = "Asia/Seoul")
     private Timestamp occurDate;
     private String detail;
     private String isCheck;
