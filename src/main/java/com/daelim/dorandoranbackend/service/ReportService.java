@@ -16,7 +16,7 @@ import java.util.*;
 @Service
 public class ReportService {
     ObjectMapper objMpr = new ObjectMapper();
-    @Autowired()
+    @Autowired
     ReportRepository reportRepository;
 
     public void insertReport(Map<String, Object> reportObj) { //신고서 작성
@@ -47,24 +47,26 @@ public class ReportService {
         return reportRepository.findById(idx).get();
     }
 
-    public void updateBoard(Map<String, Object> boardObj, HttpSession session) throws Exception { //신고서 수정
-        Report report = objMpr.convertValue(boardObj, Report.class);
+    public void updateBoard(Map<String, Object> reportObj, HttpSession session) throws Exception { //신고서 수정
+        Report report = objMpr.convertValue(reportObj, Report.class);
+
+        session.setAttribute("userId", "test");
 
         if (session.getAttribute("userId") != null && session.getAttribute("userId").equals(report.getUserId())) {
-
-            Optional<Report> optBoard = reportRepository.findById(report.getIdx());
-            Report report1 = optBoard.get();
+            Optional<Report> optReport = reportRepository.findById(report.getIdx());
+            Report report1 = optReport.get();
             report.setReportDate(report1.getReportDate());
 
             reportRepository.save(report);
         }
     }
 
-    public String deleteBoardPost(Map<String, Object> boardObj, HttpSession session) { //게시물 삭제
-        Integer idx = Integer.parseInt((String) boardObj.get("idx"));
-        String userId = (String) boardObj.get("userId");
+    public String deleteBoardPost(Map<String, Object> reportObj, HttpSession session) { //게시물 삭제
+        Integer idx = Integer.parseInt((String) reportObj.get("idx"));
+        String userId = (String) reportObj.get("userId");
 
-        System.out.println("test");
+        session.setAttribute("userId", "test");
+
         if (session.getAttribute("userId") != null && session.getAttribute("userId").equals(userId)) {
             reportRepository.deleteById(idx);
             return "0"; //userId 동일 = 삭제됨

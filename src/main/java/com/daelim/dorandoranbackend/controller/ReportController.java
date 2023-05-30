@@ -2,6 +2,7 @@ package com.daelim.dorandoranbackend.controller;
 
 import com.daelim.dorandoranbackend.controller.requestObject.ApartInfoRequest;
 import com.daelim.dorandoranbackend.controller.requestObject.ReportInsertRequest;
+import com.daelim.dorandoranbackend.controller.requestObject.ReportUpdateRequest;
 import com.daelim.dorandoranbackend.entity.Report;
 import com.daelim.dorandoranbackend.service.ReportService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -53,12 +54,12 @@ public class ReportController {
         return reportService.viewReport(idx);
     }
 
-    @Operation(summary = "소음 신고 수정")
+    @Operation(summary = "소음 신고 수정", description = "등록과 동일하게 occurDate는 \"yyyy.MM.dd'T'hh:mm\" 형식으로 입력")
     @PutMapping("/update")
     public void updateReport(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     content = @Content(
-                            schema = @Schema(implementation = ReportInsertRequest.class)
+                            schema = @Schema(implementation = ReportUpdateRequest.class)
                     )
             )
             @RequestBody Map<String,Object> reportObj, HttpSession session) throws Exception {
@@ -67,7 +68,8 @@ public class ReportController {
 
     @Operation(summary = "소음 신고 삭제")
     @PostMapping("/delete") //POST 형식
-    public String deleteReport(@RequestBody Map<String,Object> reportObj, HttpSession session) throws Exception {
+    public String deleteReport(
+            @RequestBody Map<String,Object> reportObj, HttpSession session) throws Exception {
         return reportService.deleteBoardPost(reportObj, session);
     }
 
