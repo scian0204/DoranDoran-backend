@@ -64,7 +64,7 @@ public class ReportService {
         return reportRepository.findById(idx).get();
     }
 
-    public void updateBoard(Map<String, Object> reportObj, HttpSession session) throws Exception { // 신고서 수정
+    public void updateBoard(Map<String, Object> reportObj, HttpSession session) { // 신고서 수정
         Report report = objMpr.convertValue(reportObj, Report.class);
 
         session.setAttribute("userId", reportObj.get("userId")); // 테스트용
@@ -98,12 +98,30 @@ public class ReportService {
         return res;
     }
 
-    public void checkReport(Map<String, Object> reportObj) { // 신고서 확인 체크용
+    public Response<String> checkReport(Map<String, Object> reportObj) { // 신고서 확인 체크용
+        Response<String> res = new Response<>();
+
         Integer idx = Integer.parseInt(String.valueOf(reportObj.get("idx")));
+        Report report = reportRepository.findAllByIdx(idx);
+
         String userId = String.valueOf(reportObj.get("userId"));
+        User user = userRepository.findByUserId(userId).get();
 
-
-
-        Report report = objMpr.convertValue(reportObj, Report.class);
+        if (user.getIsAdmin() != null) {
+            System.out.println(">> isCheck : " + report.getIsCheck());
+            if (report.getIsCheck() == null) {
+                report.setIsCheck(userId);
+            } else {
+                report.setIsCheck(null);
+            }
+            reportRepository.save(report);
+        } else if (user.getIsAdmin() == null) {
+            Error error = new Error();
+            error.setErrorId(1);
+            error.setMessage("관리자만 확인 가능");
+            res.setError(error);
+        }
+        return res;
     }
+
 }

@@ -1,9 +1,6 @@
 package com.daelim.dorandoranbackend.controller;
 
-import com.daelim.dorandoranbackend.controller.requestObject.ApartInfoRequest;
-import com.daelim.dorandoranbackend.controller.requestObject.ReportDeleteRequest;
-import com.daelim.dorandoranbackend.controller.requestObject.ReportInsertRequest;
-import com.daelim.dorandoranbackend.controller.requestObject.ReportUpdateRequest;
+import com.daelim.dorandoranbackend.controller.requestObject.*;
 import com.daelim.dorandoranbackend.controller.responseObject.Response;
 import com.daelim.dorandoranbackend.entity.Report;
 import com.daelim.dorandoranbackend.service.ReportService;
@@ -39,14 +36,14 @@ public class ReportController {
                         schema = @Schema(implementation = ReportInsertRequest.class)
                 )
             )
-            @RequestBody Map<String,Object> reportObj) throws Exception {
+            @RequestBody Map<String,Object> reportObj) {
         reportService.insertReport(reportObj);
     }
 
     @Operation(summary = "소음 신고 리스트", description = "유저 아이디로 소음 신고 목록 검색 API")
     @ApiResponse(description = "유저 아이디별 소음 신고 리스트")
     @GetMapping("/list/{userId}")
-    public List<Map<String, Object>> getAllReport(@PathVariable String userId) throws Exception {
+    public List<Map<String, Object>> getAllReport(@PathVariable String userId) {
         return reportService.getAllReport(userId);
     }
 
@@ -64,11 +61,12 @@ public class ReportController {
                             schema = @Schema(implementation = ReportUpdateRequest.class)
                     )
             )
-            @RequestBody Map<String,Object> reportObj, HttpSession session) throws Exception {
+            @RequestBody Map<String,Object> reportObj, HttpSession session) {
         reportService.updateBoard(reportObj, session);
     }
 
     @Operation(summary = "소음 신고 삭제")
+    @ApiResponse(description = "삭제 성공: 0<br>삭제실패-로그인 된 userId와 일치하지 않음: 1")
     @PostMapping("/delete/{idx}")
     public Response<String> deleteReport(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -76,13 +74,21 @@ public class ReportController {
                             schema = @Schema(implementation = ReportDeleteRequest.class)
                     )
             )
-            @PathVariable int idx, HttpSession session) throws Exception {
+            @PathVariable int idx, HttpSession session) {
         return reportService.deleteBoardPost(idx, session);
     }
 
     @Operation(summary = "소음 신고 확인 여부")
-    @PutMapping("/check") //POST 형식
-    public void checkReport(@RequestBody Map<String,Object> reportObj) throws Exception {
-        reportService.checkReport(reportObj);
+    @ApiResponse(description = "확인 여부 수정 성공: 0 (수정 성공 시 소음 신고 확인 여부에 관리자ID (userId) 입력)" +
+            "<br>수정실패-일반 사용자로 관리자만 확인 가능: 1")
+    @PutMapping("/check")
+    public Response<String> checkReport(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @Content(
+                            schema = @Schema(implementation = ReportCheckRequest.class)
+                    )
+            )
+            @RequestBody Map<String,Object> reportObj){
+        return reportService.checkReport(reportObj);
     }
 }
