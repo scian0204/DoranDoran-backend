@@ -1,8 +1,10 @@
 package com.daelim.dorandoranbackend.controller;
 
 import com.daelim.dorandoranbackend.controller.requestObject.ApartInfoRequest;
+import com.daelim.dorandoranbackend.controller.requestObject.ReportDeleteRequest;
 import com.daelim.dorandoranbackend.controller.requestObject.ReportInsertRequest;
 import com.daelim.dorandoranbackend.controller.requestObject.ReportUpdateRequest;
+import com.daelim.dorandoranbackend.controller.responseObject.Response;
 import com.daelim.dorandoranbackend.entity.Report;
 import com.daelim.dorandoranbackend.service.ReportService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -67,15 +69,20 @@ public class ReportController {
     }
 
     @Operation(summary = "소음 신고 삭제")
-    @PostMapping("/delete") //POST 형식
-    public String deleteReport(
-            @RequestBody Map<String,Object> reportObj, HttpSession session) throws Exception {
-        return reportService.deleteBoardPost(reportObj, session);
+    @PostMapping("/delete/{idx}")
+    public Response<String> deleteReport(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @Content(
+                            schema = @Schema(implementation = ReportDeleteRequest.class)
+                    )
+            )
+            @PathVariable int idx, HttpSession session) throws Exception {
+        return reportService.deleteBoardPost(idx, session);
     }
 
     @Operation(summary = "소음 신고 확인 여부")
-    @PostMapping("/check") //POST 형식
-    public String checkReport(@RequestBody Map<String,Object> reportObj, HttpSession session) throws Exception {
-        return reportService.deleteBoardPost(reportObj, session);
+    @PutMapping("/check") //POST 형식
+    public void checkReport(@RequestBody Map<String,Object> reportObj) throws Exception {
+        reportService.checkReport(reportObj);
     }
 }

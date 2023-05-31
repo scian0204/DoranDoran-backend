@@ -42,7 +42,7 @@ public class ReportService {
         List<Map<String, Object>> resultList = new ArrayList<>();
         List<Report> reports = null;
         User user = userRepository.findByUserId(userId).get();
-        System.out.println(">> isAdmin : " + user.getIsAdmin()); // 확인용
+//        System.out.println(">> isAdmin : " + user.getIsAdmin()); // 확인용
 
         if (user.getIsAdmin() != null) {
             int isAdmin = user.getIsAdmin();
@@ -80,8 +80,6 @@ public class ReportService {
 
     public Response<String> deleteBoardPost(Integer idx, HttpSession session) { //신고서 삭제
         Response<String> res = new Response<>();
-//        Integer idx = Integer.parseInt(String.valueOf(reportObj.get("idx")));
-//        String userId = String.valueOf(reportObj.get("userId"));
         Report report = reportRepository.findAllByIdx(idx);
         String userId = report.getUserId();
 
@@ -90,8 +88,8 @@ public class ReportService {
         if (session.getAttribute("userId") != null && session.getAttribute("userId").equals(userId)) {
             reportRepository.deleteById(idx);
         } else {
-            System.out.println(">> session userId : " + session.getAttribute("userId"));
-            System.out.println(">> reportObj userId : " + userId);
+//            System.out.println(">> session userId : " + session.getAttribute("userId")); // 확인용
+//            System.out.println(">> reportObj userId : " + userId); // 확인용
             Error error = new Error();
             error.setErrorId(1);
             error.setMessage("로그인 된 userId와 일치하지 않음");
