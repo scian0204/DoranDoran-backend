@@ -10,6 +10,6 @@ import java.util.Optional;
 @Repository
 public interface ReportRepository extends JpaRepository<Report, Integer> {
     List<Report> findAllByUserId(String userId);
-
+    List<Report> findAllByApartId(int apartId);
     Report findAllByIdx(int idx);
 }

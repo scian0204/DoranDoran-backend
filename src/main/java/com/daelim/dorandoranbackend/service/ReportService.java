@@ -40,14 +40,14 @@ public class ReportService {
 
     public List<Map<String, Object>> getAllReport(String userId) { // 신고서 리스트 처리
         List<Map<String, Object>> resultList = new ArrayList<>();
-        List<Report> reports;
-
+        List<Report> reports = null;
         User user = userRepository.findByUserId(userId).get();
-        int isAdmin = user.getIsAdmin(); // admin 여부
+        System.out.println(">> isAdmin : " + user.getIsAdmin()); // 확인용
 
-        if (userId == "admin") { // admin 유저 생성 후 확인하기. userId을 유저에서 isAdmin 가져와야함
-            reports = reportRepository.findAll();
-        } else {
+        if (user.getIsAdmin() != null) {
+            int isAdmin = user.getIsAdmin();
+            reports = reportRepository.findAllByApartId(isAdmin);
+        } else if (user.getIsAdmin() == null) {
             reports = reportRepository.findAllByUserId(userId);
         }
 
