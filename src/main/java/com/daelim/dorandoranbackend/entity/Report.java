@@ -26,4 +26,5 @@ public class Report {
     private Timestamp occurDate;
     private String detail;
     private String isCheck;
+    private Integer apartId;
 }

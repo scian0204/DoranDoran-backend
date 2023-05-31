@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface ApartUserRepository extends JpaRepository<ApartUser, Integer> {
     List<ApartUser> findAllByApartIdx(Integer apartIdx);
+    ApartUser findByUserId(String userId);
 }
