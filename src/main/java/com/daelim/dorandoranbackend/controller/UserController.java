@@ -3,6 +3,7 @@ package com.daelim.dorandoranbackend.controller;
 import com.daelim.dorandoranbackend.dto.requestObject.LoginRequest;
 import com.daelim.dorandoranbackend.dto.requestObject.UserRequest;
 import com.daelim.dorandoranbackend.dto.responseObject.Response;
+import com.daelim.dorandoranbackend.dto.responseObject.UserInfoResponse;
 import com.daelim.dorandoranbackend.entity.User;
 import com.daelim.dorandoranbackend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,7 +28,7 @@ public class UserController {
 
     @Operation(summary = "회원가입 API")
     @PostMapping("/signup")
-    public Response<User> signUp(
+    public Response<UserInfoResponse> signUp(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     content = @Content(
                             schema = @Schema(implementation = UserRequest.class)
@@ -35,6 +36,12 @@ public class UserController {
             )
             @RequestBody Map<String, Object> userObj, HttpSession session) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         return userService.signUp(userObj, session);
+    }
+
+    @Operation(summary = "유저 정보 API")
+    @GetMapping("/Info/{userId}")
+    public Response<UserInfoResponse> getUserInfoByUserId(@PathVariable String userId) {
+        return userService.getUserInfoByUserId(userId);
     }
 
     @Operation(summary = "로그인 API")
@@ -71,7 +78,7 @@ public class UserController {
 
     @Operation(summary = "유저 정보 수정 API")
     @PutMapping("/modify")
-    public Response<User> updateUser(
+    public Response<UserInfoResponse> updateUser(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     content = @Content(
                             schema = @Schema(implementation = UserRequest.class)

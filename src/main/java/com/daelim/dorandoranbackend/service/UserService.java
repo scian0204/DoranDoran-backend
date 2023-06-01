@@ -2,6 +2,7 @@ package com.daelim.dorandoranbackend.service;
 
 import com.daelim.dorandoranbackend.dto.responseObject.Error;
 import com.daelim.dorandoranbackend.dto.responseObject.Response;
+import com.daelim.dorandoranbackend.dto.responseObject.UserInfoResponse;
 import com.daelim.dorandoranbackend.entity.User;
 import com.daelim.dorandoranbackend.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,17 +22,15 @@ public class UserService{
     @Autowired()
     UserRepository userRepository;
 
-    public Response<User> signUp(Map<String, Object> userObj, HttpSession session) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    public Response<UserInfoResponse> signUp(Map<String, Object> userObj, HttpSession session) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         User user = objMpr.convertValue(userObj, User.class);
-        Response<User> res = new Response<>();
+        Response<UserInfoResponse> res = new Response<>();
 
         Optional<User> userS = userRepository.findByUserId(user.getUserId());
         if (userS.isEmpty()) {
             session.setAttribute("userId", user.getUserId());
             user.setPassword(encrypt(user.getPassword()));
-            User resUser = userRepository.save(user);
-            resUser.setPassword("");
-            res.setData(resUser);
+            res.setData(new UserInfoResponse(userRepository.save(user)));
         } else {
             Error error = new Error();
             error.setErrorId(0);
@@ -69,17 +68,15 @@ public class UserService{
         }
     }
 
-    public Response<User> updateUser(Map<String, Object> userObj, HttpSession session) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    public Response<UserInfoResponse> updateUser(Map<String, Object> userObj, HttpSession session) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         User user = objMpr.convertValue(userObj, User.class);
-        Response<User> res = new Response<>();
+        Response<UserInfoResponse> res = new Response<>();
         if (session.getAttribute("userId") != null && session.getAttribute("userId").equals(user.getUserId())) {
             Optional<User> optUser = userRepository.findByUserId(user.getUserId());
             User user1 = optUser.get();
             user.setRegDate(user1.getRegDate());
             user.setPassword(encrypt(user.getPassword()));
-            User resUser = userRepository.save(user);
-            resUser.setPassword("");
-            res.setData(resUser);
+            res.setData(new UserInfoResponse(userRepository.save(user)));
         } else {
             Error error = new Error();
             error.setErrorId(0);
@@ -136,6 +133,20 @@ public class UserService{
             result = true;
         }
         res.setData(result);
+        return res;
+    }
+
+    public Response<UserInfoResponse> getUserInfoByUserId(String userId) {
+        Response<UserInfoResponse> res = new Response<>();
+        Optional<User> userOptional = userRepository.findByUserId(userId);
+        if (userOptional.isPresent()) {
+            res.setData(new UserInfoResponse(userOptional.get()));
+        } else {
+            Error error = new Error();
+            error.setErrorId(0);
+            error.setMessage("해당 아이디를 가진 유저가 없음");
+            res.setError(error);
+        }
         return res;
     }
 }
