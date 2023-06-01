@@ -48,14 +48,10 @@ public class ApartService {
         return res;
     }
 
-    public Response<List<String>> getHoList(Integer apartId, String dong) {
-        Response<List<String>> res = new Response<>();
-        List<HoResponse> findResults = apartRepository.findDistinctByApartIdAndDong(apartId, dong);
-        List<String> result = new ArrayList<>();
-        findResults.forEach((findResult) -> {
-            result.add(findResult.getHo());
-        });
-        res.setData(result);
+    public Response<List<Apart>> getHoList(Integer apartId, String dong) {
+        Response<List<Apart>> res = new Response<>();
+        List<Apart> results = apartRepository.findByApartIdAndDong(apartId, dong);
+        res.setData(results);
         return res;
     }
 

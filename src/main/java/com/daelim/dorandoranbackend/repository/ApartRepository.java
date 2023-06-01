@@ -11,5 +11,6 @@ import java.util.List;
 @Repository
 public interface ApartRepository extends JpaRepository<Apart, Integer> {
     List<DongResponse> findDistinctByApartId(Integer apartId);
-    List<HoResponse> findDistinctByApartIdAndDong(Integer apartId, String dong);
+//    List<HoResponse> findDistinctByApartIdAndDong(Integer apartId, String dong);
+    List<Apart> findByApartIdAndDong(Integer apartId, String dong);
 }
