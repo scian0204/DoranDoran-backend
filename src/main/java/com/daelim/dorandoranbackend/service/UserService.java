@@ -1,8 +1,8 @@
 package com.daelim.dorandoranbackend.service;
 
-import com.daelim.dorandoranbackend.dto.responseObject.Error;
-import com.daelim.dorandoranbackend.dto.responseObject.Response;
-import com.daelim.dorandoranbackend.dto.responseObject.UserInfoResponse;
+import com.daelim.dorandoranbackend.dto.response.Error;
+import com.daelim.dorandoranbackend.dto.response.Response;
+import com.daelim.dorandoranbackend.dto.response.UserInfoResponse;
 import com.daelim.dorandoranbackend.entity.User;
 import com.daelim.dorandoranbackend.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;

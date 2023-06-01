@@ -1,4 +1,4 @@
-package com.daelim.dorandoranbackend.dto.responseObject;
+package com.daelim.dorandoranbackend.dto.response;
 
 public interface DongResponse {
     String getDong();

@@ -1,7 +1,7 @@
 package com.daelim.dorandoranbackend.service;
 
-import com.daelim.dorandoranbackend.controller.responseObject.Error;
-import com.daelim.dorandoranbackend.controller.responseObject.Response;
+import com.daelim.dorandoranbackend.dto.response.Error;
+import com.daelim.dorandoranbackend.dto.response.Response;
 import com.daelim.dorandoranbackend.entity.ApartUser;
 import com.daelim.dorandoranbackend.entity.Report;
 import com.daelim.dorandoranbackend.entity.User;
@@ -13,7 +13,6 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.util.*;
 
 @Service

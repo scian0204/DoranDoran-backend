@@ -1,6 +1,6 @@
 package com.daelim.dorandoranbackend.service;
 
-import com.daelim.dorandoranbackend.dto.responseObject.Response;
+import com.daelim.dorandoranbackend.dto.response.Response;
 import com.daelim.dorandoranbackend.entity.*;
 import com.daelim.dorandoranbackend.repository.*;
 import com.fasterxml.jackson.databind.ObjectMapper;

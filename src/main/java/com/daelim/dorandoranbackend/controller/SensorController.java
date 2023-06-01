@@ -1,7 +1,7 @@
 package com.daelim.dorandoranbackend.controller;
 
-import com.daelim.dorandoranbackend.dto.requestObject.SensorReportRequest;
-import com.daelim.dorandoranbackend.dto.responseObject.Response;
+import com.daelim.dorandoranbackend.dto.request.SensorReportRequest;
+import com.daelim.dorandoranbackend.dto.response.Response;
 import com.daelim.dorandoranbackend.entity.Sensor;
 import com.daelim.dorandoranbackend.service.SensorService;
 import io.swagger.v3.oas.annotations.Operation;

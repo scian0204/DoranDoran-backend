@@ -1,6 +1,6 @@
 package com.daelim.dorandoranbackend.service;
 
-import com.daelim.dorandoranbackend.dto.responseObject.Response;
+import com.daelim.dorandoranbackend.dto.response.Response;
 import com.daelim.dorandoranbackend.entity.WarningMessage;
 import com.daelim.dorandoranbackend.repository.WarningMessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;

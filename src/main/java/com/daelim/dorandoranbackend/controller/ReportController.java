@@ -1,7 +1,10 @@
 package com.daelim.dorandoranbackend.controller;
 
-import com.daelim.dorandoranbackend.controller.requestObject.*;
-import com.daelim.dorandoranbackend.controller.responseObject.Response;
+import com.daelim.dorandoranbackend.dto.request.ReportCheckRequest;
+import com.daelim.dorandoranbackend.dto.request.ReportDeleteRequest;
+import com.daelim.dorandoranbackend.dto.request.ReportInsertRequest;
+import com.daelim.dorandoranbackend.dto.request.ReportUpdateRequest;
+import com.daelim.dorandoranbackend.dto.response.Response;
 import com.daelim.dorandoranbackend.entity.Report;
 import com.daelim.dorandoranbackend.service.ReportService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,12 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;

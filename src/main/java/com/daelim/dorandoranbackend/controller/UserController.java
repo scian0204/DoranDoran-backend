@@ -1,10 +1,9 @@
 package com.daelim.dorandoranbackend.controller;
 
-import com.daelim.dorandoranbackend.dto.requestObject.LoginRequest;
-import com.daelim.dorandoranbackend.dto.requestObject.UserRequest;
-import com.daelim.dorandoranbackend.dto.responseObject.Response;
-import com.daelim.dorandoranbackend.dto.responseObject.UserInfoResponse;
-import com.daelim.dorandoranbackend.entity.User;
+import com.daelim.dorandoranbackend.dto.request.LoginRequest;
+import com.daelim.dorandoranbackend.dto.request.UserRequest;
+import com.daelim.dorandoranbackend.dto.response.Response;
+import com.daelim.dorandoranbackend.dto.response.UserInfoResponse;
 import com.daelim.dorandoranbackend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
