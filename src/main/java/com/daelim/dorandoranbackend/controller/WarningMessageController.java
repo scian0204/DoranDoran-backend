@@ -3,6 +3,7 @@ package com.daelim.dorandoranbackend.controller;
 import com.daelim.dorandoranbackend.controller.responseObject.Response;
 import com.daelim.dorandoranbackend.entity.WarningMessage;
 import com.daelim.dorandoranbackend.service.WarningMessageService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +20,7 @@ public class WarningMessageController {
     @Autowired
     WarningMessageService warningMessageService;
 
+    @Operation(summary = "유저별 경고메시지 목록 API")
     @GetMapping("/{userId}")
     public Response<List<WarningMessage>> getMessage(@PathVariable String userId) {
         return warningMessageService.getMessage(userId);

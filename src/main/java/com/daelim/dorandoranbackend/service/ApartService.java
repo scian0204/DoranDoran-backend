@@ -1,15 +1,16 @@
 package com.daelim.dorandoranbackend.service;
 
 import com.daelim.dorandoranbackend.controller.requestObject.ApartAllRequest;
-import com.daelim.dorandoranbackend.controller.responseObject.DongResponse;
+import com.daelim.dorandoranbackend.controller.responseObject.*;
 import com.daelim.dorandoranbackend.controller.responseObject.Error;
-import com.daelim.dorandoranbackend.controller.responseObject.Response;
 import com.daelim.dorandoranbackend.entity.Apart;
 import com.daelim.dorandoranbackend.entity.ApartInfo;
+import com.daelim.dorandoranbackend.entity.ApartUser;
+import com.daelim.dorandoranbackend.entity.User;
 import com.daelim.dorandoranbackend.repository.ApartInfoRepository;
 import com.daelim.dorandoranbackend.repository.ApartRepository;
 import com.daelim.dorandoranbackend.repository.ApartUserRepository;
-import com.daelim.dorandoranbackend.controller.responseObject.HoResponse;
+import com.daelim.dorandoranbackend.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,8 @@ public class ApartService {
     ApartInfoRepository apartInfoRepository;
     @Autowired
     ApartUserRepository apartUserRepository;
+    @Autowired
+    UserRepository userRepository;
 
     public Response<List<ApartInfo>> getApartList(String apartName) {
         Response<List<ApartInfo>> res = new Response<>();
@@ -89,6 +92,20 @@ public class ApartService {
             error.setMessage("해당 apartId를 가진 아파트 정보가 없음");
             res.setError(error);
         }
+        return res;
+    }
+
+    public Response<List<UserInfoResponse>> getUserByHo(Integer apartIdx) {
+        Response<List<UserInfoResponse>> res = new Response<>();
+        List<UserInfoResponse> results = new ArrayList<>();
+        List<ApartUser> apartUsers = apartUserRepository.findAllByApartIdx(apartIdx);
+        apartUsers.forEach(apartUser -> {
+            User user = userRepository.getReferenceById(apartUser.getUserId());
+            results.add(new UserInfoResponse(user));
+        });
+
+        res.setData(results);
+
         return res;
     }
 }

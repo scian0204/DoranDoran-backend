@@ -28,20 +28,22 @@ public class SensorService {
         SensorReport sr = objMpr.convertValue(req, SensorReport.class);
         sensorReportRepository.save(sr);
 
-        /**
-         * @TODO websocket 연결 후 해당 클라이언트로 경고 메시지 전송 혹은 로그인 된 계정에서 경고 메시지 확인 기능 추가
-         * */
-        Sensor sensor = sensorRepository.getReferenceById(sr.getSensorId());
-        Apart apart = apartRepository.getReferenceById(sensor.getApartIdx());
-        String message = apart.getDong() + "동 " + apart.getHo() + "호 " + sensor.getLocation() + "에서 " + sr.getReportDate() + "에 " + sr.getNoiseLevel() + "db 정도의 소음이 일어남";
+        if (sr.getNoiseLevel() > 40) {
+            /**
+             * @TODO websocket 연결 후 해당 클라이언트로 경고 메시지 전송 혹은 로그인 된 계정에서 경고 메시지 확인 기능 추가
+             * */
+            Sensor sensor = sensorRepository.getReferenceById(sr.getSensorId());
+            Apart apart = apartRepository.getReferenceById(sensor.getApartIdx());
+            String message = apart.getDong() + "동 " + apart.getHo() + "호 " + sensor.getLocation() + "에서 " + sr.getReportDate() + "에 " + sr.getNoiseLevel() + "db 정도의 소음이 일어남";
 
-        List<ApartUser> aus = apartUserRepository.findAllByApartIdx(apart.getApartIdx());
-        aus.forEach(au -> {
-            WarningMessage wm = new WarningMessage();
-            wm.setMessage(message);
-            wm.setUserId(au.getUserId());
-            warningMessageRepository.save(wm);
-        });
+            List<ApartUser> aus = apartUserRepository.findAllByApartIdx(apart.getApartIdx());
+            aus.forEach(au -> {
+                WarningMessage wm = new WarningMessage();
+                wm.setMessage(message);
+                wm.setUserId(au.getUserId());
+                warningMessageRepository.save(wm);
+            });
+        }
 
         return new Response<>();
     }
@@ -50,6 +52,20 @@ public class SensorService {
         Sensor sensor = objMpr.convertValue(sensorObj, Sensor.class);
         Response<Sensor> res = new Response<>();
         res.setData(sensorRepository.save(sensor));
+        return res;
+    }
+
+    public Response<Double> getNoiseLevelByHo(Integer apartIdx) {
+        Response<Double> res = new Response<>();
+        List<Sensor> sensors = sensorRepository.findAllByApartIdx(apartIdx);
+        double sum = 0;
+        for(int i=0; i<sensors.size(); i++) {
+            SensorReport sr = sensorReportRepository.findFirstBySensorId(sensors.get(i).getSensorId());
+            sum += sr.getNoiseLevel();
+        }
+        double avg = sum / sensors.size();
+        res.setData(avg);
+
         return res;
     }
 }

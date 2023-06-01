@@ -27,7 +27,7 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @Operation(summary = "회원가입")
+    @Operation(summary = "회원가입 API")
     @PostMapping("/signup")
     public Response<User> signUp(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -39,7 +39,7 @@ public class UserController {
         return userService.signUp(userObj, session);
     }
 
-    @Operation(summary = "로그인")
+    @Operation(summary = "로그인 API")
     @PostMapping("/login")
     public Response<String> login(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -51,7 +51,7 @@ public class UserController {
         return userService.login(userObj, session);
     }
 
-    @Operation(summary = "로그아웃")
+    @Operation(summary = "로그아웃 API")
     @GetMapping("/logout")
     public Response<String> logout(HttpSession session) {
         session.removeAttribute("userId");
@@ -59,7 +59,7 @@ public class UserController {
         return res;
     }
 
-    @Operation(summary = "로그인 여부 확인")
+    @Operation(summary = "로그인 여부 확인 API")
     @ApiResponse(description = "로그인 상태: 해당 아이디 세션<br>로그아웃 상태: null")
     @GetMapping("/isLogin")
     public Response<String> isLogin(HttpSession session) {
@@ -71,7 +71,7 @@ public class UserController {
         return res;
     }
 
-    @Operation(summary = "유저 정보 수정")
+    @Operation(summary = "유저 정보 수정 API")
     @PutMapping("/modify")
     public Response<User> updateUser(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -83,7 +83,7 @@ public class UserController {
         return userService.updateUser(userObj, session);
     }
 
-    @Operation(summary = "회원 탈퇴")
+    @Operation(summary = "회원 탈퇴 API")
     @ApiResponse(description = "탈퇴 성공: 2<br>탈퇴실패-로그인돼있는 id와 다름: 0<br>탈퇴실패-id는 맞지만 pw틀림: 1")
     @PostMapping("/delete")
     public Response<Object> deleteUser(
@@ -96,7 +96,7 @@ public class UserController {
         return userService.deleteUser(userObj, session);
     }
 
-    @Operation(summary = "아이디 중복 체크")
+    @Operation(summary = "아이디 중복 체크 API")
     @GetMapping("/isIdDup/{userId}")
     public Response<Boolean> isIdDup(@PathVariable String userId) {
         return userService.isIdDup(userId);

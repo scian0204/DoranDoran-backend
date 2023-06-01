@@ -2,8 +2,8 @@ package com.daelim.dorandoranbackend.controller;
 
 import com.daelim.dorandoranbackend.controller.requestObject.ApartAllRequest;
 import com.daelim.dorandoranbackend.controller.requestObject.ApartInfoRequest;
-import com.daelim.dorandoranbackend.controller.requestObject.HoRequest;
 import com.daelim.dorandoranbackend.controller.responseObject.Response;
+import com.daelim.dorandoranbackend.controller.responseObject.UserInfoResponse;
 import com.daelim.dorandoranbackend.entity.Apart;
 import com.daelim.dorandoranbackend.entity.ApartInfo;
 import com.daelim.dorandoranbackend.service.ApartService;
@@ -43,6 +43,12 @@ public class ApartController {
     @GetMapping("/ho/{apartId}/{dong}")
     public Response<List<String>> getHoList(@PathVariable Integer apartId, @PathVariable String dong) {
         return apartService.getHoList(apartId, dong);
+    }
+
+    @Operation(summary = "호별 유저 목록 API", description = "apart의 apartIdx를 넣을 것")
+    @GetMapping("/getUser/{apartIdx}")
+    public Response<List<UserInfoResponse>> getUserByHo(@PathVariable Integer apartIdx) {
+        return apartService.getUserByHo(apartIdx);
     }
 
     @Operation(summary = "아파트 등록 API")
