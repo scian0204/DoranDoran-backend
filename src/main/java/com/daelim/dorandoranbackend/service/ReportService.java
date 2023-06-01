@@ -1,91 +1,127 @@
 package com.daelim.dorandoranbackend.service;
 
+import com.daelim.dorandoranbackend.controller.responseObject.Error;
+import com.daelim.dorandoranbackend.controller.responseObject.Response;
+import com.daelim.dorandoranbackend.entity.ApartUser;
 import com.daelim.dorandoranbackend.entity.Report;
+import com.daelim.dorandoranbackend.entity.User;
+import com.daelim.dorandoranbackend.repository.ApartUserRepository;
 import com.daelim.dorandoranbackend.repository.ReportRepository;
+import com.daelim.dorandoranbackend.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ReportService {
     ObjectMapper objMpr = new ObjectMapper();
-    @Autowired()
+    @Autowired
     ReportRepository reportRepository;
 
-    public void write(Map<String, Object> boardObj, MultipartFile file) throws Exception { //글 작성 처리
-        Report report = objMpr.convertValue(boardObj, Report.class);
-//        String idx = (String) boardObj.get("idx");
-        String filePath = System.getProperty("user.dir") + "\\src\\main\\resources\\files"; //저장할 경로 지정
+    @Autowired
+    UserRepository userRepository;
 
-        if (file != null) {
-            File saveFile = new File(filePath, boardObj.get("idx").toString());
-            file.transferTo(saveFile);
-//            report.setImageLoc(String.valueOf(saveFile));
-        }
+    @Autowired
+    ApartUserRepository apartUserRepository;
+
+    public void insertReport(Map<String, Object> reportObj) { // 신고서 작성
+        Report report = objMpr.convertValue(reportObj, Report.class);
+        String userId = String.valueOf(reportObj.get("userId"));
+        ApartUser apartUser = apartUserRepository.findByUserId(userId);
+//        System.out.println(">> Apart ID : " + apartUser.getApartIdx()); // 확인용
+        report.setApartId(apartUser.getApartIdx());
 
         reportRepository.save(report);
     }
 
-    public Page<Report> getAllBoards(Pageable pageable) { //게시글 리스트 처리
-//        long boardsCount = boardRepository.count(); //게시글 수 0개 조건문??
-        return reportRepository.findAll(pageable);
+    public List<Map<String, Object>> getAllReport(String userId) { // 신고서 리스트 처리
+        List<Map<String, Object>> resultList = new ArrayList<>();
+        List<Report> reports = null;
+        User user = userRepository.findByUserId(userId).get();
+//        System.out.println(">> isAdmin : " + user.getIsAdmin()); // 확인용
+
+        if (user.getIsAdmin() != null) {
+            int isAdmin = user.getIsAdmin();
+            reports = reportRepository.findAllByApartId(isAdmin);
+        } else if (user.getIsAdmin() == null) {
+            reports = reportRepository.findAllByUserId(userId);
+        }
+
+        reports.forEach(report -> {
+            Map<String, Object> result = new HashMap<>();
+            result.put("report", report);
+            resultList.add(result);
+        });
+
+        return resultList;
     }
 
-    public Report viewBoard(Integer idx) { //게시물 상세 페이지
+    public Report viewReport(Integer idx) { // 신고서 상세 페이지
         return reportRepository.findById(idx).get();
     }
 
-    public void updateBoard(Map<String, Object> boardObj, HttpSession session) throws Exception { //게시물 수정
-//        System.out.println("test1");
-        Report report = objMpr.convertValue(boardObj, Report.class);
-//        String filePath = System.getProperty("user.dir") + "\\src\\main\\resources\\files"; //이미지 수정용 주소 (필요한가??)
+    public void updateBoard(Map<String, Object> reportObj, HttpSession session) { // 신고서 수정
+        Report report = objMpr.convertValue(reportObj, Report.class);
 
-//        session.setAttribute("userId", "test"); //테스트용
-//        System.out.println(session.getAttribute("userId") != null && session.getAttribute("userId").equals(board.getUserId()));
+        session.setAttribute("userId", reportObj.get("userId")); // 테스트용
+
         if (session.getAttribute("userId") != null && session.getAttribute("userId").equals(report.getUserId())) {
-//            System.out.println("test2");
-
-//            board.setTitle(board.getTitle());
-//            board.setContent(board.getContent()); //?
-
-            Optional<Report> optBoard = reportRepository.findById(report.getIdx());
-            Report report1 = optBoard.get();
+            Optional<Report> optReport = reportRepository.findById(report.getIdx());
+            Report report1 = optReport.get();
             report.setReportDate(report1.getReportDate());
-//            report.setImageLoc(report1.getImageLoc()); // 날짜와 파일경로 null값으로 넘길 경우 db도 null 수정됨을 방지
-
-//            File saveFile = new File(filePath, (String) boardObj.get("idx"));
-//            file.transferTo(saveFile);
-//            board.setImageLoc(String.valueOf(saveFile));
 
             reportRepository.save(report);
         }
     }
 
-/*    public void deleteBoard(Integer idx, HttpSession session) { //게시물 삭제
-        //userId가 접속된 userId와 동일한지 비교??,,,,
-//        if (session.getAttribute("userId") != null && session.getAttribute("userId").equals(board.getUserId())) {
-//        }
-        boardRepository.deleteById(idx);
-    }*/
+    public Response<String> deleteBoardPost(Integer idx, HttpSession session) { //신고서 삭제
+        Response<String> res = new Response<>();
+        Report report = reportRepository.findAllByIdx(idx);
+        String userId = report.getUserId();
 
-    public String deleteBoardPost(Map<String, Object> boardObj, HttpSession session) { //게시물 삭제
-        Integer idx = Integer.parseInt((String) boardObj.get("idx"));
-        String userId = (String) boardObj.get("userId");
+        session.setAttribute("userId", "test1"); // 테스트용
 
-        System.out.println("test");
         if (session.getAttribute("userId") != null && session.getAttribute("userId").equals(userId)) {
             reportRepository.deleteById(idx);
-            return "0"; //userId 동일 = 삭제됨
         } else {
-            return "1"; //
+//            System.out.println(">> session userId : " + session.getAttribute("userId")); // 확인용
+//            System.out.println(">> reportObj userId : " + userId); // 확인용
+            Error error = new Error();
+            error.setErrorId(1);
+            error.setMessage("로그인 된 userId와 일치하지 않음");
+            res.setError(error);
         }
+        return res;
     }
+
+    public Response<String> checkReport(Map<String, Object> reportObj) { // 신고서 확인 체크용
+        Response<String> res = new Response<>();
+
+        Integer idx = Integer.parseInt(String.valueOf(reportObj.get("idx")));
+        Report report = reportRepository.findAllByIdx(idx);
+
+        String userId = String.valueOf(reportObj.get("userId"));
+        User user = userRepository.findByUserId(userId).get();
+
+        if (user.getIsAdmin() != null) {
+            System.out.println(">> isCheck : " + report.getIsCheck());
+            if (report.getIsCheck() == null) {
+                report.setIsCheck(userId);
+            } else {
+                report.setIsCheck(null);
+            }
+            reportRepository.save(report);
+        } else if (user.getIsAdmin() == null) {
+            Error error = new Error();
+            error.setErrorId(1);
+            error.setMessage("관리자만 확인 가능");
+            res.setError(error);
+        }
+        return res;
+    }
+
 }
