@@ -1,4 +1,4 @@
-package com.daelim.dorandoranbackend.controller.requestObject;
+package com.daelim.dorandoranbackend.dto.requestObject;
 
 import lombok.Data;
 

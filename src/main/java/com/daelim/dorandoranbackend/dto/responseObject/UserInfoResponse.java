@@ -1,4 +1,4 @@
-package com.daelim.dorandoranbackend.controller.responseObject;
+package com.daelim.dorandoranbackend.dto.responseObject;
 
 import com.daelim.dorandoranbackend.entity.User;
 import lombok.Data;

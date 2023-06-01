@@ -1,8 +1,8 @@
 package com.daelim.dorandoranbackend.repository;
 
-import com.daelim.dorandoranbackend.controller.responseObject.DongResponse;
+import com.daelim.dorandoranbackend.dto.responseObject.DongResponse;
 import com.daelim.dorandoranbackend.entity.Apart;
-import com.daelim.dorandoranbackend.controller.responseObject.HoResponse;
+import com.daelim.dorandoranbackend.dto.responseObject.HoResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

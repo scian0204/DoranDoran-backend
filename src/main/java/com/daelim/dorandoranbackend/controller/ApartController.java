@@ -1,9 +1,9 @@
 package com.daelim.dorandoranbackend.controller;
 
-import com.daelim.dorandoranbackend.controller.requestObject.ApartAllRequest;
-import com.daelim.dorandoranbackend.controller.requestObject.ApartInfoRequest;
-import com.daelim.dorandoranbackend.controller.responseObject.Response;
-import com.daelim.dorandoranbackend.controller.responseObject.UserInfoResponse;
+import com.daelim.dorandoranbackend.dto.requestObject.ApartAllRequest;
+import com.daelim.dorandoranbackend.dto.requestObject.ApartInfoRequest;
+import com.daelim.dorandoranbackend.dto.responseObject.Response;
+import com.daelim.dorandoranbackend.dto.responseObject.UserInfoResponse;
 import com.daelim.dorandoranbackend.entity.Apart;
 import com.daelim.dorandoranbackend.entity.ApartInfo;
 import com.daelim.dorandoranbackend.service.ApartService;

@@ -1,6 +1,6 @@
 package com.daelim.dorandoranbackend.controller;
 
-import com.daelim.dorandoranbackend.controller.responseObject.Response;
+import com.daelim.dorandoranbackend.dto.responseObject.Response;
 import com.daelim.dorandoranbackend.entity.WarningMessage;
 import com.daelim.dorandoranbackend.service.WarningMessageService;
 import io.swagger.v3.oas.annotations.Operation;

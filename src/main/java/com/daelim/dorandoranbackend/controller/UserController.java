@@ -1,9 +1,8 @@
 package com.daelim.dorandoranbackend.controller;
 
-import com.daelim.dorandoranbackend.controller.requestObject.LoginRequest;
-import com.daelim.dorandoranbackend.controller.requestObject.UserRequest;
-import com.daelim.dorandoranbackend.controller.responseObject.Error;
-import com.daelim.dorandoranbackend.controller.responseObject.Response;
+import com.daelim.dorandoranbackend.dto.requestObject.LoginRequest;
+import com.daelim.dorandoranbackend.dto.requestObject.UserRequest;
+import com.daelim.dorandoranbackend.dto.responseObject.Response;
 import com.daelim.dorandoranbackend.entity.User;
 import com.daelim.dorandoranbackend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 import java.util.Map;
 
 @Tag(name = "User", description = "유저 API")
