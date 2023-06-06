@@ -51,6 +51,12 @@ public class ApartController {
         return apartService.getUserByHo(apartIdx);
     }
 
+    @Operation(summary = "유저별 호 API")
+    @GetMapping("/getInfo/{userId}")
+    public Response<Apart> getInfoByUserId(@PathVariable String userId) {
+        return apartService.getInfoByUserId(userId);
+    }
+
     @Operation(summary = "아파트 등록 API")
     @PostMapping("/regist")
     public Response<ApartInfo> registApart(
