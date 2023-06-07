@@ -1,14 +1,18 @@
 package com.daelim.dorandoranbackend.service;
 
+import com.daelim.dorandoranbackend.dto.request.UserRequest;
 import com.daelim.dorandoranbackend.dto.response.Error;
 import com.daelim.dorandoranbackend.dto.response.Response;
 import com.daelim.dorandoranbackend.dto.response.UserInfoResponse;
+import com.daelim.dorandoranbackend.entity.ApartUser;
 import com.daelim.dorandoranbackend.entity.User;
+import com.daelim.dorandoranbackend.repository.ApartUserRepository;
 import com.daelim.dorandoranbackend.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -17,13 +21,17 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class UserService{
     ObjectMapper objMpr = new ObjectMapper();
-    @Autowired()
+    @Autowired
     UserRepository userRepository;
+    @Autowired
+    ApartUserRepository apartUserRepository;
 
     public Response<UserInfoResponse> signUp(Map<String, Object> userObj, HttpSession session) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        User user = objMpr.convertValue(userObj, User.class);
+        UserRequest userRequest = objMpr.convertValue(userObj, UserRequest.class);
+        User user = new User(userRequest);
         Response<UserInfoResponse> res = new Response<>();
 
         Optional<User> userS = userRepository.findByUserId(user.getUserId());
@@ -31,6 +39,10 @@ public class UserService{
             session.setAttribute("userId", user.getUserId());
             user.setPassword(encrypt(user.getPassword()));
             res.setData(new UserInfoResponse(userRepository.save(user)));
+            ApartUser apartUser = new ApartUser();
+            apartUser.setUserId(user.getUserId());
+            apartUser.setApartIdx(userRequest.getApartIdx());
+            apartUserRepository.save(apartUser);
         } else {
             Error error = new Error();
             error.setErrorId(0);

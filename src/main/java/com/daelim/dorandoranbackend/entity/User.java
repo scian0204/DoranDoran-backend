@@ -1,5 +1,6 @@
 package com.daelim.dorandoranbackend.entity;
 
+import com.daelim.dorandoranbackend.dto.request.UserRequest;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.*;
@@ -11,7 +12,7 @@ import java.sql.Timestamp;
 @Data
 @DynamicInsert
 @DynamicUpdate
-//@ToString
+@NoArgsConstructor
 @Entity
 public class User {
     @Id
@@ -21,4 +22,11 @@ public class User {
     private String telNum;
     private Integer isAdmin;
     private Timestamp regDate;
+
+    public User(UserRequest userRequest) {
+        this.userId = userRequest.getUserId();
+        this.userName = userRequest.getUserName();
+        this.password = userRequest.getPassword();
+        this.telNum = userRequest.getTelNum();
+    }
 }
