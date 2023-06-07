@@ -109,7 +109,8 @@ public class ApartService {
         ApartUser apartUser = apartUserRepository.findByUserId(userId);
         Response<Apart> res = new Response<>();
         if (apartUser != null) {
-            res.setData(apartRepository.getReferenceById(apartUser.getApartIdx()));
+            Apart apart = new Apart(apartRepository.getReferenceById(apartUser.getApartIdx()));
+            res.setData(apart);
         } else {
             Error error = new Error();
             error.setErrorId(0);
