@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class ApartService {
@@ -33,7 +34,7 @@ public class ApartService {
 
     public Response<List<ApartInfo>> getApartList(String apartName) {
         Response<List<ApartInfo>> res = new Response<>();
-        res.setData(apartInfoRepository.findAllByApartName(apartName));
+        res.setData(apartInfoRepository.findAllByApartNameLikeIgnoreCase("%"+apartName+"%"));
         return res;
     }
 
@@ -109,12 +110,36 @@ public class ApartService {
         ApartUser apartUser = apartUserRepository.findByUserId(userId);
         Response<Apart> res = new Response<>();
         if (apartUser != null) {
+            Apart apart1 = apartRepository.getReferenceById(apartUser.getApartIdx());
             Apart apart = new Apart(apartRepository.getReferenceById(apartUser.getApartIdx()));
-            res.setData(apart);
+
+            System.out.println(apart.hashCode() == apart1.hashCode());
+            System.out.println(apart.equals(apart1));
+            System.out.println(apart == apart1);
+            System.out.println("1 : " + apart.hashCode());
+            System.out.println("2 : " + apart1.hashCode());
+            System.out.println(apart);
+            System.out.println(apart1);
+            res.setData(apart1);
         } else {
             Error error = new Error();
             error.setErrorId(0);
             error.setMessage("해당 유저가 등록돼있지 않음");
+            res.setError(error);
+        }
+
+        return res;
+    }
+
+    public Response<Apart> getApartByApartIdAndDongAndHo(Integer apartId, String dong, String ho) {
+        Optional<Apart> apartOptional = apartRepository.findByApartIdAndDongAndHo(apartId, dong, ho);
+        Response<Apart> res = new Response<>();
+        if (apartOptional.isPresent()) {
+            res.setData(apartOptional.get());
+        } else {
+            Error error = new Error();
+            error.setErrorId(0);
+            error.setMessage("해당 아파트가 없음");
             res.setError(error);
         }
 

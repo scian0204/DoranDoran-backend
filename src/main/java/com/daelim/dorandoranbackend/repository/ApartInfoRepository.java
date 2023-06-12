@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface ApartInfoRepository extends JpaRepository<ApartInfo, Integer> {
-    List<ApartInfo> findAllByApartName(String apartName);
+    List<ApartInfo> findAllByApartNameLikeIgnoreCase(String apartName);
 }

@@ -45,6 +45,12 @@ public class ApartController {
         return apartService.getHoList(apartId, dong);
     }
 
+    @Operation(summary = "아파트 동 호 API", description = "apartId, dong, ho로 apartIdx 얻는 API")
+    @GetMapping("/{apartId}/{dong}/{ho}")
+    public Response<Apart> getApartByApartIdAndDongAndHo(@PathVariable Integer apartId, @PathVariable String dong, @PathVariable String ho) {
+        return apartService.getApartByApartIdAndDongAndHo(apartId, dong, ho);
+    }
+
     @Operation(summary = "호별 유저 목록 API", description = "apart의 apartIdx를 넣을 것")
     @GetMapping("/getUser/{apartIdx}")
     public Response<List<UserInfoResponse>> getUserByHo(@PathVariable Integer apartIdx) {
