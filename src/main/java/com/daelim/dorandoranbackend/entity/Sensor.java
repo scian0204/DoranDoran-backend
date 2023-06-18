@@ -14,7 +14,6 @@ import org.hibernate.annotations.DynamicUpdate;
 @Data
 public class Sensor {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String sensorId;
     private Integer apartIdx;
     private String location;
