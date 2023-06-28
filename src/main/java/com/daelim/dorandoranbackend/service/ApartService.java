@@ -110,17 +110,9 @@ public class ApartService {
         ApartUser apartUser = apartUserRepository.findByUserId(userId);
         Response<Apart> res = new Response<>();
         if (apartUser != null) {
-            Apart apart1 = apartRepository.getReferenceById(apartUser.getApartIdx());
             Apart apart = new Apart(apartRepository.getReferenceById(apartUser.getApartIdx()));
 
-            System.out.println(apart.hashCode() == apart1.hashCode());
-            System.out.println(apart.equals(apart1));
-            System.out.println(apart == apart1);
-            System.out.println("1 : " + apart.hashCode());
-            System.out.println("2 : " + apart1.hashCode());
-            System.out.println(apart);
-            System.out.println(apart1);
-            res.setData(apart1);
+            res.setData(apart);
         } else {
             Error error = new Error();
             error.setErrorId(0);
