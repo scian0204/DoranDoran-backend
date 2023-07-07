@@ -17,6 +17,7 @@ CREATE TABLE `User` (
   `regDate` timestamp NOT NULL DEFAULT current_timestamp(), 
   PRIMARY KEY (`userId`), 
   KEY `User_FK` (`isAdmin`), 
+  CONSTRAINT `User_FK` FOREIGN KEY (`isAdmin`) REFERENCES `ApartInfo` (`apartId`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8; 
 
 -- 아파트 정보 테이블
@@ -58,8 +59,11 @@ CREATE TABLE `Report` (
   `occurDate` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00', -- 소음 발생 시각
   `detail` text DEFAULT NULL, -- 상세 내용
   `isCheck` varchar(100) DEFAULT NULL, -- 확인 여부
+  `apartId` int(11) NOT NULL, -- 아파트 ID
   PRIMARY KEY (`idx`),
   KEY `report_FK` (`userId`),
+  KEY `Report_FK_1` (`apartId`),
+  CONSTRAINT `Report_FK_1` FOREIGN KEY (`apartId`) REFERENCES `ApartInfo` (`apartId`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `report_FK` FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -71,8 +75,11 @@ CREATE TABLE `NoiseSchedule` (
   `startDate` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00', -- 소음 발생 시작 예정 시각
   `endDate` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00', -- 소음 발생 종료 예정 시각
   `reason` text DEFAULT NULL, -- 소음 발생 이유
+  `apartId` int(11) NOT NULL DEFAULT 1, -- 아파트 ID
   PRIMARY KEY (`idx`),
   KEY `report_schedule_FK` (`userId`),
+  KEY `NoiseSchedule_FK` (`apartId`),
+  CONSTRAINT `NoiseSchedule_FK` FOREIGN KEY (`apartId`) REFERENCES `ApartInfo` (`apartId`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `report_schedule_FK` FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -107,6 +114,79 @@ CREATE TABLE `WarningMessage` (
   KEY `WarningMessage_FK` (`userId`),
   CONSTRAINT `WarningMessage_FK` FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+```
+
+``` mermaid
+classDiagram
+direction BT
+class Apart {
+- Integer apartIdx
+- String dong
+- String ho
+- Integer apartId
+  }
+  class ApartInfo {
+- Integer apartId
+- String location
+- String apartName
+  }
+  class ApartUser {
+- String userId
+- Integer apartIdx
+- Integer idx
+  }
+  class NoiseSchedule {
+- Integer idx
+- String userId
+- String reason
+- Timestamp startDate
+- Timestamp endDate
+- Timestamp reportDate
+  }
+  class Report {
+- Integer apartId
+- String detail
+- String isCheck
+- Integer idx
+- String userId
+- Timestamp reportDate
+- Timestamp occurDate
+  }
+  class Sensor {
+- String location
+- String sensorId
+- Integer apartIdx
+  }
+  class SensorReport {
+- Double noiseLevel
+- Timestamp reportDate
+- Integer idx
+- String sensorId
+  }
+  class User {
+- String userId
+- Integer isAdmin
+- Timestamp regDate
+- String password
+- String telNum
+- String userName
+  }
+  class WarningMessage {
+- Integer idx
+- String message
+- String userId
+- Timestamp regDate
+  }
+
+Apart  -->  ApartUser
+Apart  -->  Sensor
+ApartInfo  -->  Apart
+ApartInfo  -->  Report
+Sensor  -->  SensorReport
+User  -->  ApartUser
+User  -->  NoiseSchedule
+User  -->  Report
+User  -->  WarningMessage
 ```
 
 ## TODO
