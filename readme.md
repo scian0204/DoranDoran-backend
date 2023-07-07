@@ -187,6 +187,7 @@ User  -->  ApartUser
 User  -->  NoiseSchedule
 User  -->  Report
 User  -->  WarningMessage
+ApartInfo --> User
 ```
 
 ## TODO
