@@ -105,4 +105,9 @@ public class UserController {
     public Response<Boolean> isIdDup(@PathVariable String userId) {
         return userService.isIdDup(userId);
     }
+
+    @GetMapping("/check")
+    public String checkSession(HttpSession session) {
+        return session.getId();
+    }
 }
