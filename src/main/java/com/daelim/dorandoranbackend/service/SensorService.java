@@ -23,12 +23,14 @@ public class SensorService {
     WarningMessageRepository warningMessageRepository;
     @Autowired
     ApartUserRepository apartUserRepository;
+    @Autowired
+    NoiseLogRepository noiseLogRepository;
 
     public Response<Object> reportNoise(Map<String, Object> req) {
         SensorReport sr = objMpr.convertValue(req, SensorReport.class);
         sensorReportRepository.save(sr);
 
-        if (sr.getNoiseLevel() > 40) {
+//        if (sr.getNoiseLevel() > 40) {
             /**
              * @TODO websocket 연결 후 해당 클라이언트로 경고 메시지 전송 혹은 로그인 된 계정에서 경고 메시지 확인 기능 추가
              * */
@@ -43,7 +45,7 @@ public class SensorService {
                 wm.setUserId(au.getUserId());
                 warningMessageRepository.save(wm);
             });
-        }
+//        }
 
         return new Response<>();
     }
@@ -60,11 +62,21 @@ public class SensorService {
         List<Sensor> sensors = sensorRepository.findAllByApartIdx(apartIdx);
         double sum = 0;
         for(int i=0; i<sensors.size(); i++) {
-            SensorReport sr = sensorReportRepository.findFirstBySensorId(sensors.get(i).getSensorId());
-            sum += sr.getNoiseLevel();
+            NoiseLog sr = noiseLogRepository.findFirstBySensorId(sensors.get(i).getSensorId());
+            sum += sr.getAvgNoise();
         }
         double avg = sum / sensors.size();
         res.setData(avg);
+
+        return res;
+    }
+
+    public Response<NoiseLog> logNoise(Map<String, Object> logObj) {
+        Response<NoiseLog> res = new Response<>();
+        NoiseLog reqNl = objMpr.convertValue(logObj, NoiseLog.class);
+        NoiseLog resNl = noiseLogRepository.save(reqNl);
+
+        res.setData(resNl);
 
         return res;
     }

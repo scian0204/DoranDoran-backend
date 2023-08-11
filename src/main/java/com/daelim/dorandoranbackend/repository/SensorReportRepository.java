@@ -6,5 +6,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SensorReportRepository extends JpaRepository<SensorReport, Integer> {
-    SensorReport findFirstBySensorId(String sensorId);
 }
