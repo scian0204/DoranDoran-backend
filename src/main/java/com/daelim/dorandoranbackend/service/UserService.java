@@ -55,6 +55,7 @@ public class UserService{
                     .path("/")
                     .httpOnly(false)
                     .sameSite("None")
+                    .secure(true)
                     .build();
             response.addHeader("Set-Cookie", resCookie.toString());
         } else {
@@ -80,6 +81,7 @@ public class UserService{
                         .path("/")
                         .httpOnly(false)
                         .sameSite("None")
+                        .secure(true)
                         .build();
                 response.addHeader("Set-Cookie", resCookie.toString());
                 res.setData(user.getUserId());
