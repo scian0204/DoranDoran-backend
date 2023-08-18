@@ -50,14 +50,6 @@ public class UserService{
             apartUser.setUserId(user.getUserId());
             apartUser.setApartIdx(userRequest.getApartIdx());
             apartUserRepository.save(apartUser);
-            String token = jwtProvider.createToken(user.getUserId());
-            ResponseCookie resCookie = ResponseCookie.from(cookieKey, token)
-                    .path("/")
-                    .httpOnly(true)
-                    .sameSite("Lax")
-                    .secure(false)
-                    .build();
-            response.addHeader("Set-Cookie", resCookie.toString());
         } else {
             Error error = new Error();
             error.setErrorId(0);
@@ -67,7 +59,7 @@ public class UserService{
         return res;
     }
 
-    public Response<String> login(Map<String, Object> userObj, HttpServletResponse response) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    public Response<String> login(Map<String, Object> userObj) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         String userId = (String) userObj.get("userId");
         String password = (String) userObj.get("password");
         Response<String> res = new Response<>();
@@ -77,14 +69,7 @@ public class UserService{
             User user = byUserId.get();
             if (user.getPassword().equals(encrypt(password))) {
                 String token = jwtProvider.createToken(userId);
-                ResponseCookie resCookie = ResponseCookie.from(cookieKey, token)
-                        .path("/")
-                        .httpOnly(true)
-                        .sameSite("Lax")
-                        .secure(false)
-                        .build();
-                response.addHeader("Set-Cookie", resCookie.toString());
-                res.setData(user.getUserId());
+                res.setData(token);
                 return res;
             } else {
                 Error error = new Error();

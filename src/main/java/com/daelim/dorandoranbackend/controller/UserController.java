@@ -58,8 +58,8 @@ public class UserController {
                             schema = @Schema(implementation = LoginRequest.class)
                     )
             )
-            @RequestBody Map<String, Object> userObj, HttpServletResponse response) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        return userService.login(userObj, response);
+            @RequestBody Map<String, Object> userObj) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        return userService.login(userObj);
     }
 
     @Operation(summary = "로그아웃 API")
