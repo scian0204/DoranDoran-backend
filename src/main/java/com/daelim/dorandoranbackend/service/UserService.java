@@ -54,7 +54,8 @@ public class UserService{
             ResponseCookie resCookie = ResponseCookie.from(cookieKey, token)
                     .path("/")
                     .httpOnly(false)
-                    .sameSite(" ")
+                    .sameSite("None")
+                    .secure(true)
                     .build();
             response.addHeader("Set-Cookie", resCookie.toString());
         } else {
@@ -79,7 +80,8 @@ public class UserService{
                 ResponseCookie resCookie = ResponseCookie.from(cookieKey, token)
                         .path("/")
                         .httpOnly(false)
-                        .sameSite(" ")
+                        .sameSite("None")
+                        .secure(true)
                         .build();
                 response.addHeader("Set-Cookie", resCookie.toString());
                 res.setData(user.getUserId());
