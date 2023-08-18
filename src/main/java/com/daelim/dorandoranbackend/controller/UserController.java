@@ -2,15 +2,19 @@ package com.daelim.dorandoranbackend.controller;
 
 import com.daelim.dorandoranbackend.dto.request.LoginRequest;
 import com.daelim.dorandoranbackend.dto.request.UserRequest;
+import com.daelim.dorandoranbackend.dto.response.Error;
 import com.daelim.dorandoranbackend.dto.response.Response;
 import com.daelim.dorandoranbackend.dto.response.UserInfoResponse;
+import com.daelim.dorandoranbackend.modules.JwtProvider;
 import com.daelim.dorandoranbackend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +28,9 @@ import java.util.Map;
 public class UserController {
     @Autowired
     UserService userService;
+    @Autowired
+    JwtProvider jwtProvider;
+    private final String cookieKey = "dorandoran-token";
 
     @Operation(summary = "회원가입 API")
     @PostMapping("/signup")
@@ -33,8 +40,8 @@ public class UserController {
                             schema = @Schema(implementation = UserRequest.class)
                     )
             )
-            @RequestBody Map<String, Object> userObj, HttpSession session) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        return userService.signUp(userObj, session);
+            @RequestBody Map<String, Object> userObj, HttpServletResponse response) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        return userService.signUp(userObj, response);
     }
 
     @Operation(summary = "유저 정보 API")
@@ -51,14 +58,16 @@ public class UserController {
                             schema = @Schema(implementation = LoginRequest.class)
                     )
             )
-            @RequestBody Map<String, Object> userObj, HttpSession session) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        return userService.login(userObj, session);
+            @RequestBody Map<String, Object> userObj, HttpServletResponse response) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        return userService.login(userObj, response);
     }
 
     @Operation(summary = "로그아웃 API")
     @GetMapping("/logout")
-    public Response<String> logout(HttpSession session) {
-        session.removeAttribute("userId");
+    public Response<String> logout(HttpServletResponse response) {
+        Cookie cookie = new Cookie(cookieKey, null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
         Response<String> res = new Response<>();
         return res;
     }
@@ -66,11 +75,23 @@ public class UserController {
     @Operation(summary = "로그인 여부 확인 API")
     @ApiResponse(description = "로그인 상태: 해당 아이디 세션<br>로그아웃 상태: null")
     @GetMapping("/isLogin")
-    public Response<String> isLogin(HttpSession session) {
+    public Response<String> isLogin(@Parameter(hidden = true) @CookieValue(value = cookieKey, required = false)Cookie cookie) {
         Response<String> res = new Response<>();
-        Object userId = session.getAttribute("userId");
-        if (userId != null) {
-            res.setData(userId.toString());
+        if (cookie == null) {
+            Error error = new Error();
+            error.setErrorId(0);
+            error.setMessage("토큰이 발급되지 않음");
+            res.setError(error);
+        } else {
+            String token = cookie.getValue();
+            if (jwtProvider.validateToken(token)) {
+                res.setData(jwtProvider.getUserId(token));
+            } else {
+                Error error = new Error();
+                error.setErrorId(1);
+                error.setMessage("토큰 유효기간 초과됨");
+                res.setError(error);
+            }
         }
         return res;
     }
@@ -83,8 +104,10 @@ public class UserController {
                             schema = @Schema(implementation = UserRequest.class)
                     )
             )
-            @RequestBody Map<String, Object> userObj, HttpSession session) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        return userService.updateUser(userObj, session);
+            @RequestBody Map<String, Object> userObj,
+            @Parameter(hidden = true)
+            @CookieValue(value = cookieKey, required = false)Cookie cookie) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        return userService.updateUser(userObj, cookie);
     }
 
     @Operation(summary = "회원 탈퇴 API")
@@ -96,18 +119,15 @@ public class UserController {
                             schema = @Schema(implementation = LoginRequest.class)
                     )
             )
-            @RequestBody Map<String, Object> userObj, HttpSession session) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        return userService.deleteUser(userObj, session);
+            @RequestBody Map<String, Object> userObj, HttpServletResponse response,
+            @Parameter(hidden = true)
+            @CookieValue(value = cookieKey, required = false)Cookie cookie) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        return userService.deleteUser(userObj, response, cookie);
     }
 
     @Operation(summary = "아이디 중복 체크 API")
     @GetMapping("/isIdDup/{userId}")
     public Response<Boolean> isIdDup(@PathVariable String userId) {
         return userService.isIdDup(userId);
-    }
-
-    @GetMapping("/check")
-    public String checkSession(HttpSession session) {
-        return session.getId();
     }
 }
