@@ -53,9 +53,9 @@ public class UserService{
             String token = jwtProvider.createToken(user.getUserId());
             ResponseCookie resCookie = ResponseCookie.from(cookieKey, token)
                     .path("/")
-                    .httpOnly(false)
+                    .httpOnly(true)
                     .sameSite("None")
-                    .secure(true)
+                    .secure(false)
                     .build();
             response.addHeader("Set-Cookie", resCookie.toString());
         } else {
@@ -79,9 +79,9 @@ public class UserService{
                 String token = jwtProvider.createToken(userId);
                 ResponseCookie resCookie = ResponseCookie.from(cookieKey, token)
                         .path("/")
-                        .httpOnly(false)
+                        .httpOnly(true)
                         .sameSite("None")
-                        .secure(true)
+                        .secure(false)
                         .build();
                 response.addHeader("Set-Cookie", resCookie.toString());
                 res.setData(user.getUserId());
