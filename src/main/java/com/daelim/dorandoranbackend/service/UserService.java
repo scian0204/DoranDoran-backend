@@ -14,6 +14,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,8 +51,12 @@ public class UserService{
             apartUser.setApartIdx(userRequest.getApartIdx());
             apartUserRepository.save(apartUser);
             String token = jwtProvider.createToken(user.getUserId());
-            Cookie jwtCookie = new Cookie(cookieKey, token);
-            response.addCookie(jwtCookie);
+            ResponseCookie resCookie = ResponseCookie.from(cookieKey, token)
+                    .path("/")
+                    .httpOnly(false)
+                    .sameSite("None")
+                    .build();
+            response.addHeader("Set-Cookie", resCookie.toString());
         } else {
             Error error = new Error();
             error.setErrorId(0);
@@ -71,8 +76,12 @@ public class UserService{
             User user = byUserId.get();
             if (user.getPassword().equals(encrypt(password))) {
                 String token = jwtProvider.createToken(userId);
-                Cookie jwtCookie = new Cookie(cookieKey, token);
-                response.addCookie(jwtCookie);
+                ResponseCookie resCookie = ResponseCookie.from(cookieKey, token)
+                        .path("/")
+                        .httpOnly(false)
+                        .sameSite("None")
+                        .build();
+                response.addHeader("Set-Cookie", resCookie.toString());
                 res.setData(user.getUserId());
                 return res;
             } else {
