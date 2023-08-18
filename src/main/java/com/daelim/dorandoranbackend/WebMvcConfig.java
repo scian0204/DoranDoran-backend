@@ -13,6 +13,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins("http://dorandoran-fe.s3-website.ap-northeast-2.amazonaws.com")
                 .allowedMethods("OPTIONS", "GET", "POST", "PUT", "DELETE")
+                .allowedHeaders("*")
                 .allowCredentials(true);
     }
 }
