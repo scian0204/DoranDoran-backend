@@ -46,7 +46,7 @@ public class UserController {
     }
 
     @Operation(summary = "유저 정보 API")
-    @GetMapping("/info/{userId}")
+    @GetMapping("/info")
     public Response<UserInfoResponse> getUserInfoByUserId(HttpServletRequest request) {
         String token = request.getHeader(cookieKey);
         Response<UserInfoResponse> res = new Response<>();

@@ -182,7 +182,7 @@ public class UserService{
             res.setData(new UserInfoResponse(userOptional.get()));
         } else {
             Error error = new Error();
-            error.setErrorId(0);
+            error.setErrorId(1);
             error.setMessage("해당 아이디를 가진 유저가 없음");
             res.setError(error);
         }
