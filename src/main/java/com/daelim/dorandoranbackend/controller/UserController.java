@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -129,5 +130,20 @@ public class UserController {
     @GetMapping("/isIdDup/{userId}")
     public Response<Boolean> isIdDup(@PathVariable String userId) {
         return userService.isIdDup(userId);
+    }
+
+    @GetMapping("/getId")
+    public Response<String> getId(HttpServletRequest request) {
+        String token = request.getHeader(cookieKey);
+        Response<String> res = new Response<>();
+        if (token.isEmpty()) {
+            Error error = new Error();
+            error.setErrorId(0);
+            error.setMessage("토큰이 없읍");
+            res.setError(error);
+        } else {
+            res.setData(jwtProvider.getUserId(token));
+        }
+        return res;
     }
 }
