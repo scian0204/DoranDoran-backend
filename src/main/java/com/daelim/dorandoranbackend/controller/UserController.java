@@ -46,9 +46,20 @@ public class UserController {
     }
 
     @Operation(summary = "유저 정보 API")
-    @GetMapping("/Info/{userId}")
-    public Response<UserInfoResponse> getUserInfoByUserId(@PathVariable String userId) {
-        return userService.getUserInfoByUserId(userId);
+    @GetMapping("/info/{userId}")
+    public Response<UserInfoResponse> getUserInfoByUserId(HttpServletRequest request) {
+        String token = request.getHeader(cookieKey);
+        Response<UserInfoResponse> res = new Response<>();
+        if (token == null || token.isEmpty()) {
+            Error error = new Error();
+            error.setErrorId(0);
+            error.setMessage("토큰이 없읍");
+            res.setError(error);
+        } else {
+            res = userService.getUserInfoByUserId(token);
+        }
+
+        return res;
     }
 
     @Operation(summary = "로그인 API")
@@ -61,16 +72,6 @@ public class UserController {
             )
             @RequestBody Map<String, Object> userObj) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         return userService.login(userObj);
-    }
-
-    @Operation(summary = "로그아웃 API")
-    @GetMapping("/logout")
-    public Response<String> logout(HttpServletResponse response) {
-        Cookie cookie = new Cookie(cookieKey, null);
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
-        Response<String> res = new Response<>();
-        return res;
     }
 
     @Operation(summary = "로그인 여부 확인 API")
@@ -132,18 +133,4 @@ public class UserController {
         return userService.isIdDup(userId);
     }
 
-    @GetMapping("/getId")
-    public Response<String> getId(HttpServletRequest request) {
-        String token = request.getHeader(cookieKey);
-        Response<String> res = new Response<>();
-        if (token.isEmpty()) {
-            Error error = new Error();
-            error.setErrorId(0);
-            error.setMessage("토큰이 없읍");
-            res.setError(error);
-        } else {
-            res.setData(jwtProvider.getUserId(token));
-        }
-        return res;
-    }
 }

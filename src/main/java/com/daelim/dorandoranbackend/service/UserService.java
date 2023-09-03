@@ -174,8 +174,9 @@ public class UserService{
         return res;
     }
 
-    public Response<UserInfoResponse> getUserInfoByUserId(String userId) {
+    public Response<UserInfoResponse> getUserInfoByUserId(String token) {
         Response<UserInfoResponse> res = new Response<>();
+        String userId = jwtProvider.getUserId(token);
         Optional<User> userOptional = userRepository.findByUserId(userId);
         if (userOptional.isPresent()) {
             res.setData(new UserInfoResponse(userOptional.get()));
