@@ -5,9 +5,7 @@ import com.daelim.dorandoranbackend.dto.response.Response;
 import com.daelim.dorandoranbackend.entity.ApartUser;
 import com.daelim.dorandoranbackend.entity.Report;
 import com.daelim.dorandoranbackend.entity.User;
-import com.daelim.dorandoranbackend.repository.ApartUserRepository;
-import com.daelim.dorandoranbackend.repository.ReportRepository;
-import com.daelim.dorandoranbackend.repository.UserRepository;
+import com.daelim.dorandoranbackend.repository.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +25,22 @@ public class ReportService {
     @Autowired
     ApartUserRepository apartUserRepository;
 
+    // 2023-09-20_apartId 대신 apartIdx를 넣어 왜래키 오류 나서 고침
+    @Autowired
+    ApartRepository apartRepository;
+
     public void insertReport(Map<String, Object> reportObj) { // 신고서 작성
         Report report = objMpr.convertValue(reportObj, Report.class);
         String userId = String.valueOf(reportObj.get("userId"));
         ApartUser apartUser = apartUserRepository.findByUserId(userId);
+
+
+        Integer apartId = apartRepository.findFirstByApartIdx(apartUser.getApartIdx()).getApartId();
+
+
 //        System.out.println(">> Apart ID : " + apartUser.getApartIdx()); // 확인용
-        report.setApartId(apartUser.getApartIdx());
+
+        report.setApartId(apartId);
 
         reportRepository.save(report);
     }

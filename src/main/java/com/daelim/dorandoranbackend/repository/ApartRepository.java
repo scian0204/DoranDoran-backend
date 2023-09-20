@@ -15,4 +15,6 @@ public interface ApartRepository extends JpaRepository<Apart, Integer> {
 //    List<HoResponse> findDistinctByApartIdAndDong(Integer apartId, String dong);
     List<Apart> findByApartIdAndDong(Integer apartId, String dong);
     Optional<Apart> findByApartIdAndDongAndHo(Integer apartId, String dong, String ho);
+
+    Apart findFirstByApartIdx(Integer apartIdx);
 }
