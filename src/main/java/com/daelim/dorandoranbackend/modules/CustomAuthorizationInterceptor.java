@@ -21,9 +21,10 @@ public class CustomAuthorizationInterceptor implements HandlerInterceptor {
             Method method = handlerMethod.getMethod();
 
             if (method.isAnnotationPresent(CustomAuthorization.class)) {
+                CustomAuthorization customAuthorization = method.getAnnotation(CustomAuthorization.class);
                 boolean authorize = jwtProvider.validateToken(request);
 
-                if (!authorize) {
+                if (!authorize || (customAuthorization.isAdmin() && !jwtProvider.isAdmin(jwtProvider.getToken(request)))) {
                     response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                     return false;
                 }
