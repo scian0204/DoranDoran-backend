@@ -6,12 +6,16 @@ import com.daelim.dorandoranbackend.dto.response.Response;
 import com.daelim.dorandoranbackend.dto.response.UserInfoResponse;
 import com.daelim.dorandoranbackend.entity.Apart;
 import com.daelim.dorandoranbackend.entity.ApartInfo;
+import com.daelim.dorandoranbackend.modules.CustomAuthorization;
+import com.daelim.dorandoranbackend.modules.JwtProvider;
 import com.daelim.dorandoranbackend.service.ApartService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,9 +25,10 @@ import java.util.Map;
 @Tag(name = "Apart", description = "아파트 API")
 @RestController
 @RequestMapping("/api/apart")
+@RequiredArgsConstructor
 public class ApartController {
-    @Autowired
-    ApartService apartService;
+    private final ApartService apartService;
+    private final JwtProvider jwtProvider;
 
     @Operation(summary = "아파트 목록 API", description = "아파트 이름으로 아파트 목록 검색하는 API")
     @GetMapping("/{apartName}")
@@ -57,9 +62,11 @@ public class ApartController {
         return apartService.getUserByHo(apartIdx);
     }
 
-    @Operation(summary = "유저별 호 API")
-    @GetMapping("/getInfo/{userId}")
-    public Response<Apart> getInfoByUserId(@PathVariable String userId) {
+    @Operation(summary = "유저별 호 API - 로그인 필요")
+    @CustomAuthorization
+    @GetMapping("/getInfo/")
+    public Response<Apart> getInfoByUserId(HttpServletRequest request) {
+        String userId = jwtProvider.getUserId(jwtProvider.getToken(request));
         return apartService.getInfoByUserId(userId);
     }
 

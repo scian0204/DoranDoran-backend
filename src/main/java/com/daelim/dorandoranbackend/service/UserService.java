@@ -35,21 +35,21 @@ public class UserService{
     @Autowired
     JwtProvider jwtProvider;
 
-    private String cookieKey = "dorandoran-token";
-
-    public Response<UserInfoResponse> signUp(Map<String, Object> userObj, HttpServletResponse response) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    public Response<String> signUp(Map<String, Object> userObj) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         UserRequest userRequest = objMpr.convertValue(userObj, UserRequest.class);
         User user = new User(userRequest);
-        Response<UserInfoResponse> res = new Response<>();
+        Response<String> res = new Response<>();
 
-        Optional<User> userS = userRepository.findByUserId(user.getUserId());
-        if (userS.isEmpty()) {
+        if (isIdDup(user.getUserId()).getData()) {
             user.setPassword(encrypt(user.getPassword()));
-            res.setData(new UserInfoResponse(userRepository.save(user)));
+            userRepository.save(user);
+
             ApartUser apartUser = new ApartUser();
             apartUser.setUserId(user.getUserId());
             apartUser.setApartIdx(userRequest.getApartIdx());
             apartUserRepository.save(apartUser);
+
+            res.setData(jwtProvider.createToken(user.getUserId()));
         } else {
             Error error = new Error();
             error.setErrorId(0);
@@ -87,65 +87,48 @@ public class UserService{
         }
     }
 
-    public Response<UserInfoResponse> updateUser(Map<String, Object> userObj, Cookie cookie) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    public Response<UserInfoResponse> updateUser(Map<String, Object> userObj, String token) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        String userId = jwtProvider.getUserId(token);
         Integer apartIdx = Integer.parseInt(userObj.get("apartIdx").toString());
         userObj.remove("apartIdx");
-        User user = objMpr.convertValue(userObj, User.class);
+
+        User updateUserData = objMpr.convertValue(userObj, User.class);
+
         Response<UserInfoResponse> res = new Response<>();
-        String token = cookie.getValue();
-        if (jwtProvider.validateToken(token)) {
-            String userId = jwtProvider.getUserId(token);
-            if (userId.equals(user.getUserId())) {
-                Optional<User> optUser = userRepository.findByUserId(user.getUserId());
-                User user1 = optUser.get();
-                user.setRegDate(user1.getRegDate());
-                user.setPassword(encrypt(user.getPassword()));
-                res.setData(new UserInfoResponse(userRepository.save(user)));
-            } else {
-                Error error = new Error();
-                error.setErrorId(1);
-                error.setMessage("로그인 된 userId와 일치하지 않음");
-                res.setError(error);
-            }
+
+        Optional<User> userOpt = userRepository.findByUserId(userId);
+        if (userOpt.isPresent()) {
+            User currentUserData = userOpt.get();
+
+            updateUserData.setUserId(userId);
+            updateUserData.setRegDate(currentUserData.getRegDate());
+            updateUserData.setPassword(encrypt(updateUserData.getPassword()));
+
+            res.setData(new UserInfoResponse(userRepository.save(updateUserData)));
         } else {
             Error error = new Error();
             error.setErrorId(0);
-            error.setMessage("로그아웃 상태임");
+            error.setMessage("해당 아이디를 가진 유저가 없음");
             res.setError(error);
         }
+
         return res;
     }
 
-    public Response<Object> deleteUser(Map<String, Object> userObj, HttpServletResponse response, Cookie cookie) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        String userId = (String) userObj.get("userId");
-        String password = (String) userObj.get("password");
-        Response<Object> res = new Response<>();
+    public Response<Boolean> deleteUser(String token) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        Response<Boolean> res = new Response<>();
+        String userId = jwtProvider.getUserId(token);
+        Optional<User> userOpt = userRepository.findByUserId(userId);
 
-        Optional<User> byUserId = userRepository.findByUserId(userId);
-        String token = cookie.getValue();
-        if (!jwtProvider.validateToken(token)) {
-            Error error = new Error();
-            error.setErrorId(0);
-            error.setMessage("로그아웃 상태임");
-            res.setError(error);
-        } else if (jwtProvider.getUserId(token).equals(userId)) {
-            User user = byUserId.get();
-            if (user.getPassword().equals(encrypt(password))) {
-                Cookie rmCookie = new Cookie(cookieKey, null);
-                rmCookie.setMaxAge(0);
-                response.addCookie(rmCookie);
-                userRepository.deleteById(userId);
-            } else {
-                Error error = new Error();
-                error.setErrorId(2);
-                error.setMessage("userId는 존재하지만 password가 일치하지 않음");
-                res.setError(error);
-            }
+        if (userOpt.isPresent()) {
+            userRepository.deleteById(userId);
+            res.setData(true);
         } else {
             Error error = new Error();
-            error.setErrorId(1);
-            error.setMessage("로그인 된 userId와 일치하지 않음");
+            error.setErrorId(0);
+            error.setMessage("해당 아이디를 가진 유저가 없음");
             res.setError(error);
+            res.setData(false);
         }
         return res;
     }
@@ -182,7 +165,7 @@ public class UserService{
             res.setData(new UserInfoResponse(userOptional.get()));
         } else {
             Error error = new Error();
-            error.setErrorId(1);
+            error.setErrorId(0);
             error.setMessage("해당 아이디를 가진 유저가 없음");
             res.setError(error);
         }

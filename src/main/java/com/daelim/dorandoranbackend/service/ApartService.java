@@ -109,16 +109,9 @@ public class ApartService {
     public Response<Apart> getInfoByUserId(String userId) {
         ApartUser apartUser = apartUserRepository.findByUserId(userId);
         Response<Apart> res = new Response<>();
-        if (apartUser != null) {
-            Apart apart = new Apart(apartRepository.getReferenceById(apartUser.getApartIdx()));
+        Apart apart = new Apart(apartRepository.getReferenceById(apartUser.getApartIdx()));
 
-            res.setData(apart);
-        } else {
-            Error error = new Error();
-            error.setErrorId(0);
-            error.setMessage("해당 유저가 등록돼있지 않음");
-            res.setError(error);
-        }
+        res.setData(apart);
 
         return res;
     }
