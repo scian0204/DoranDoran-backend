@@ -64,9 +64,9 @@ public class ApartController {
 
     @Operation(summary = "유저별 호 API - 로그인 필요")
     @CustomAuthorization
-    @GetMapping("/getInfo/")
+    @GetMapping("/getInfo")
     public Response<Apart> getInfoByUserId(HttpServletRequest request) {
-        String userId = jwtProvider.getUserId(jwtProvider.getToken(request));
+        String userId = jwtProvider.getUserId(request);
         return apartService.getInfoByUserId(userId);
     }
 

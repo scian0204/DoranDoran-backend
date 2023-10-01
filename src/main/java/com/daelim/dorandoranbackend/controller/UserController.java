@@ -46,8 +46,8 @@ public class UserController {
     @CustomAuthorization
     @GetMapping("/info")
     public Response<UserInfoResponse> getUserInfoByUserId(HttpServletRequest request) {
-        String token = jwtProvider.getToken(request);
-        Response<UserInfoResponse> res = userService.getUserInfoByUserId(token);
+        String userId = jwtProvider.getUserId(request);
+        Response<UserInfoResponse> res = userService.getUserInfoByUserId(userId);
 
         return res;
     }
@@ -85,14 +85,14 @@ public class UserController {
                     )
             )
             @RequestBody Map<String, Object> userObj, HttpServletRequest request) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        return userService.updateUser(userObj, jwtProvider.getToken(request));
+        return userService.updateUser(userObj, jwtProvider.getUserId(request));
     }
 
     @Operation(summary = "회원 탈퇴 API - 로그인 필요")
     @CustomAuthorization
     @PostMapping("/delete")
     public Response<Boolean> deleteUser(HttpServletRequest request) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        return userService.deleteUser(jwtProvider.getToken(request));
+        return userService.deleteUser(jwtProvider.getUserId(request));
     }
 
     @Operation(summary = "아이디 중복 체크 API")

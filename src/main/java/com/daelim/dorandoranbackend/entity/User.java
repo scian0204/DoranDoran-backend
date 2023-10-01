@@ -13,7 +13,9 @@ import java.sql.Timestamp;
 @DynamicInsert
 @DynamicUpdate
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
+@Builder
 public class User {
     @Id
     private String userId;
@@ -22,11 +24,4 @@ public class User {
     private String telNum;
     private Integer isAdmin;
     private Timestamp regDate;
-
-    public User(UserRequest userRequest) {
-        this.userId = userRequest.getUserId();
-        this.userName = userRequest.getUserName();
-        this.password = userRequest.getPassword();
-        this.telNum = userRequest.getTelNum();
-    }
 }

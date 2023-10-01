@@ -49,6 +49,10 @@ public class JwtProvider {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
+    public String getUserId(HttpServletRequest request) {
+        return getUserId(getToken(request));
+    }
+
     public boolean isAdmin(String token) {
         User user = userJwtService.getUserByUserId(getUserId(token));
         return user.getIsAdmin()!=null;

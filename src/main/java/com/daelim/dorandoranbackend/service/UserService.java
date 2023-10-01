@@ -1,6 +1,7 @@
 package com.daelim.dorandoranbackend.service;
 
 import com.daelim.dorandoranbackend.dto.request.UserRequest;
+import com.daelim.dorandoranbackend.dto.request.UserUpdateRequest;
 import com.daelim.dorandoranbackend.dto.response.Error;
 import com.daelim.dorandoranbackend.dto.response.Response;
 import com.daelim.dorandoranbackend.dto.response.UserInfoResponse;
@@ -37,10 +38,15 @@ public class UserService{
 
     public Response<String> signUp(Map<String, Object> userObj) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         UserRequest userRequest = objMpr.convertValue(userObj, UserRequest.class);
-        User user = new User(userRequest);
+        User user = userRequest.convert();
         Response<String> res = new Response<>();
 
         if (isIdDup(user.getUserId()).getData()) {
+            Error error = new Error();
+            error.setErrorId(0);
+            error.setMessage("userId 중복됨");
+            res.setError(error);
+        } else {
             user.setPassword(encrypt(user.getPassword()));
             userRepository.save(user);
 
@@ -50,11 +56,6 @@ public class UserService{
             apartUserRepository.save(apartUser);
 
             res.setData(jwtProvider.createToken(user.getUserId()));
-        } else {
-            Error error = new Error();
-            error.setErrorId(0);
-            error.setMessage("userId 중복됨");
-            res.setError(error);
         }
         return res;
     }
@@ -87,12 +88,10 @@ public class UserService{
         }
     }
 
-    public Response<UserInfoResponse> updateUser(Map<String, Object> userObj, String token) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        String userId = jwtProvider.getUserId(token);
+    public Response<UserInfoResponse> updateUser(Map<String, Object> userObj, String userId) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        UserUpdateRequest userUpdateRequest = objMpr.convertValue(userObj ,UserUpdateRequest.class);
+        User updateUserData = userUpdateRequest.convert();
         Integer apartIdx = Integer.parseInt(userObj.get("apartIdx").toString());
-        userObj.remove("apartIdx");
-
-        User updateUserData = objMpr.convertValue(userObj, User.class);
 
         Response<UserInfoResponse> res = new Response<>();
 
@@ -115,9 +114,8 @@ public class UserService{
         return res;
     }
 
-    public Response<Boolean> deleteUser(String token) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    public Response<Boolean> deleteUser(String userId) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         Response<Boolean> res = new Response<>();
-        String userId = jwtProvider.getUserId(token);
         Optional<User> userOpt = userRepository.findByUserId(userId);
 
         if (userOpt.isPresent()) {
@@ -157,9 +155,8 @@ public class UserService{
         return res;
     }
 
-    public Response<UserInfoResponse> getUserInfoByUserId(String token) {
+    public Response<UserInfoResponse> getUserInfoByUserId(String userId) {
         Response<UserInfoResponse> res = new Response<>();
-        String userId = jwtProvider.getUserId(token);
         Optional<User> userOptional = userRepository.findByUserId(userId);
         if (userOptional.isPresent()) {
             res.setData(new UserInfoResponse(userOptional.get()));
