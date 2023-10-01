@@ -191,32 +191,20 @@ ApartInfo --> User
 ```
 
 ## TODO
-1. 유저 관리 /api/users
-   1. 가입 - 아파트 이름, 동 목록에서 고르도록, 없으면 직접 입력 후 db등록 || 나머지 직접 입력
-   2. 회원정보 수정 - 패스워드 변경 등
-   3. 회원 탈퇴
-   4. 정보 확인
-2. 신고 /api/report
-   1. C
-   2. R
-   3. U
-   4. D
-
-3. 신고예고 /api/noise_schedule
-   1. C
-   2. R
-   3. U
-   4. D
-
-
-# api요청시 주의사항
-> axios.defaults.withCredentials = true; //axios 사용 컴포넌트 마다 한번씩 붙여넣을 것
-
-이거 안쓰면 세션ID가 계속 바뀌기 때문에 로그인 유지가 안됨
-
-gitLab 연동 테스트
+로그인이 `session`방식에서 `JWT`방식으로 변경됨에 따라 API로직 변경
+1. 로그인 확인
+   1. 기존에는 `컨트롤러`에서 `HttpSession`객체를 받아와 `getAttribute`메서드를 통해 로그인을 확인
+   2. `컨트롤러` 메서드에 `@CustomAuthorization` 어노테이션을 붙이면 로그인 확인을 해줌
+      - `@CustomAuthorization(isAdmin = true)`를 사용할 시 관리자 권한인지 확인해줌
+      - 상세한 로직은 `modules/CustomAuthorization(Interceptor)`파일 확인
+   3. 따라서 해당 어노테이션을 붙인 API의 로직은 요청한 사용자가 인증된 사용자라는 것을 전제로 짜야함
+2. API 요청한 유저의 `userId` 얻는 방식
+   1. 기존에는 `컨트롤러`에서 `HttpSession`객체를 받아와 `getAttribute`메서드를 통해 `userId`를 얻음
+   2. 의존주입으로 `modules/JwtProvider` 클래스를 생성
+   3. `컨트롤러` 메서드에서 `HttpServletRequest` 클래스를 인자로 받음
+   4. `jwtProvider`객체의 `getToken`메서드와 `getUserId`메서드를 이용
+   5. 상세한 로직은 해당 클래스 파일 확인, `User`, `Apart` API 참조
 
 ## API 표
 ### Swagger로 대체
-- http://hanium-api.kro.kr:8088/docs/ 접속
 - 서버실행 후 http://localhost:8080/swagger-ui/index.html#/ 접속
