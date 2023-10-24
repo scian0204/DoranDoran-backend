@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,11 +25,10 @@ import java.util.Map;
 @Tag(name = "User", description = "유저 API")
 @RestController
 @RequestMapping("/api/users")
+@RequiredArgsConstructor
 public class UserController {
-    @Autowired
-    UserService userService;
-    @Autowired
-    JwtProvider jwtProvider;
+    private final UserService userService;
+    private final JwtProvider jwtProvider;
 
     @Operation(summary = "회원가입 API")
     @PostMapping("/signup")
